@@ -1,9 +1,5 @@
 # Aula 6 — FinOps & Projeto Final (Quantum Commerce)
 
-**Datas:** 06/07/2026 (1AIER) · 20/07/2026 (1AIE)
-
----
-
 ## Objetivos de aprendizagem
 
 Ao final desta aula, você será capaz de:

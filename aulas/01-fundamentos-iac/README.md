@@ -1,9 +1,5 @@
 # Aula 1 — Fundamentos & Estratégia de Cloud + IaC
 
-**Datas:** 01/06/2026 (1AIER) · 15/06/2026 (1AIE)
-
----
-
 ## Objetivos de aprendizagem
 
 Ao final desta aula, você será capaz de:

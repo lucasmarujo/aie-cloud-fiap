@@ -1,9 +1,5 @@
 # Aula 5 — MLOps na Nuvem
 
-**Datas:** 29/06/2026 (1AIER) · 13/07/2026 (1AIE)
-
----
-
 ## Objetivos de aprendizagem
 
 Ao final desta aula, você será capaz de:

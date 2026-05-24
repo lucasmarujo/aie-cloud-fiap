@@ -1,9 +1,5 @@
 # Aula 4 — Serviços Cognitivos & APIs
 
-**Datas:** 22/06/2026 (1AIER) · 06/07/2026 (1AIE)
-
----
-
 ## Objetivos de aprendizagem
 
 Ao final desta aula, você será capaz de:

@@ -1,9 +1,5 @@
 # Aula 2 — Armazenamento & Bancos de Dados na Nuvem
 
-**Datas:** 08/06/2026 (1AIER) · 22/06/2026 (1AIE)
-
----
-
 ## Objetivos de aprendizagem
 
 Ao final desta aula, você será capaz de:

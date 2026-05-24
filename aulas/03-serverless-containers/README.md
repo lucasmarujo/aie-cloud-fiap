@@ -1,9 +1,5 @@
 # Aula 3 — Compute Avançado: Serverless, VMs e Containers
 
-**Datas:** 15/06/2026 (1AIER) · 29/06/2026 (1AIE)
-
----
-
 ## Objetivos de aprendizagem
 
 Ao final desta aula, você será capaz de:

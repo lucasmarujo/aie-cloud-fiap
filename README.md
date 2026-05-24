@@ -10,14 +10,14 @@ Repositório de labs, exercícios e código de infraestrutura da disciplina **Cl
 
 A disciplina forma a base de infraestrutura cloud sobre a qual o restante do MBA constrói soluções de Agentic AI. São **6 aulas de 4 horas**, com forte componente prático — todos os labs rodam **sem instalação local** no [Azure Cloud Shell](https://shell.azure.com).
 
-| # | Tema | Data 1AIER | Data 1AIE |
-|---|------|------------|-----------|
-| 1 | [Fundamentos & IaC](aulas/01-fundamentos-iac/) | 01/06/2026 | 15/06/2026 |
-| 2 | [Storage & Bancos](aulas/02-storage-bancos/) | 08/06/2026 | 22/06/2026 |
-| 3 | [Serverless & Containers](aulas/03-serverless-containers/) | 15/06/2026 | 29/06/2026 |
-| 4 | [Serviços Cognitivos](aulas/04-servicos-cognitivos/) | 22/06/2026 | 06/07/2026 |
-| 5 | [MLOps](aulas/05-mlops/) | 29/06/2026 | 13/07/2026 |
-| 6 | [FinOps & Projeto Final](aulas/06-finops-projeto-final/) | 06/07/2026 | 20/07/2026 |
+| # | Tema |
+|---|------|
+| 1 | [Fundamentos & IaC](aulas/01-fundamentos-iac/) |
+| 2 | [Storage & Bancos](aulas/02-storage-bancos/) |
+| 3 | [Serverless & Containers](aulas/03-serverless-containers/) |
+| 4 | [Serviços Cognitivos](aulas/04-servicos-cognitivos/) |
+| 5 | [MLOps](aulas/05-mlops/) |
+| 6 | [FinOps & Projeto Final](aulas/06-finops-projeto-final/) |
 
 ---
 
