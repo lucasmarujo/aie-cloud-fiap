@@ -1,0 +1,7 @@
+azure-functions
+azure-identity
+azure-storage-blob
+azure-cognitiveservices-speech
+azure-ai-textanalytics
+azure-ai-vision-imageanalysis
+azure-cosmos
