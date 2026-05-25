@@ -314,7 +314,7 @@ Portal → **Cost Management** → **Análise de Custo** → filtrar por hoje. T
 **Saída desta aula:**
 
 - Function App + ACR + ACI provisionados via Terraform
-- API de catálogo da QC funcionando em **2 sabores** — você decide qual leva para a apresentação final na Aula 6
+- API de catálogo da QC funcionando em **2 sabores** — você decide qual leva para o projeto integrado final
 
 **Para os agentes da QC (Aula 4 e disciplinas seguintes do MBA):**
 

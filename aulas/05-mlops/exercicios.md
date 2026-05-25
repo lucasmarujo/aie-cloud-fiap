@@ -10,7 +10,7 @@
 
 ## Instruções gerais
 
-Esta é a **5ª e última entrega intermediária**. A Aula 6 é dedicada ao **trabalho em grupo no projeto integrado final** (50% da nota — entrega ZIP, **sem apresentação ao vivo**).
+Esta é a **5ª e última entrega intermediária**. A Aula 6 é dedicada ao **trabalho em grupo no projeto integrado final** (50% da nota — entrega ZIP, **sem apresentação oral**).
 
 ### Importante — perfil dos alunos
 
@@ -370,7 +370,7 @@ A entrega é **um ZIP por grupo** (`entrega-grupo-NN-aula05.zip`) no Portal FIAP
 A Aula 6 tem 2 partes:
 
 1. **FinOps** (parte inicial) — princípios, ferramentas e calculadoras de custo aplicados à arquitetura da QC
-2. **Tempo guiado para trabalho em grupo no projeto integrado final** (vale 50% da nota total — entrega ZIP, **sem apresentação ao vivo**)
+2. **Tempo guiado para trabalho em grupo no projeto integrado final** (vale 50% da nota total — entrega ZIP, **sem apresentação oral**)
 
 Comece a consolidar agora:
 
@@ -380,4 +380,4 @@ Comece a consolidar agora:
 4. **5 tools do agente** documentadas (`/produtos`, `/transcrever`, `/analisar-reviews`, `/analisar-imagem`, `/recomendar`)
 5. **Documento final** no formato ZIP para o Portal FIAP
 
-Rubrica do projeto integrado final em [entregas/apresentacao-final-aula06/INSTRUCOES.md](../../entregas/apresentacao-final-aula06/INSTRUCOES.md).
+Rubrica do projeto integrado final em [entregas/projeto-final/INSTRUCOES.md](../../entregas/projeto-final/INSTRUCOES.md).

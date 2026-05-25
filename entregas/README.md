@@ -1,11 +1,11 @@
 # Entregas — Cloud & Cognitive Environments
 
-A disciplina é avaliada por **5 entregas intermediárias em grupo** (Aulas 1-5) + **apresentação final** (Aula 6).
+A disciplina é avaliada por **5 entregas intermediárias em grupo** (Aulas 1-5) + **projeto integrado final** (entrega ZIP **1 semana após a Aula 6**, **sem apresentação oral**).
 
 | Componente | Peso |
 |------------|------|
 | Entregas das Aulas 1-5 (10% cada) | 50% |
-| Apresentação final (Aula 6) | 50% |
+| Projeto integrado final (entrega 1 semana após a Aula 6) | 50% |
 | **Total** | **100%** |
 
 ---
@@ -44,14 +44,14 @@ Como configurar o repo privado, gerar o ZIP e fazer upload está em [aulas/01-fu
 
 | Caminho | Conteúdo |
 |---------|----------|
-| [rubrica.md](rubrica.md) | Rubrica única aplicada às 5 entregas intermediárias + rubrica da apresentação final |
+| [rubrica.md](rubrica.md) | Rubrica única aplicada às 5 entregas intermediárias + rubrica do projeto integrado final |
 | [template-entrega-grupo.md](template-entrega-grupo.md) | Template obrigatório do documento principal dentro de cada ZIP |
 | [entrega-01/](entrega-01/) | Instruções específicas da entrega da Aula 1 |
 | [entrega-02/](entrega-02/) | Instruções específicas da entrega da Aula 2 |
 | [entrega-03/](entrega-03/) | Instruções específicas da entrega da Aula 3 |
 | [entrega-04/](entrega-04/) | Instruções específicas da entrega da Aula 4 |
 | [entrega-05/](entrega-05/) | Instruções específicas da entrega da Aula 5 |
-| [apresentacao-final-aula06/](apresentacao-final-aula06/) | Instruções da apresentação final (50% da nota) |
+| [projeto-final/](projeto-final/) | Instruções do projeto integrado final (50% da nota) — entrega ZIP, sem apresentação oral |
 
 ---
 

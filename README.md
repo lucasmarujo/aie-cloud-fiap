@@ -44,7 +44,7 @@ recursos/                 Cheatsheets, troubleshooting, glossário
 
 ## Avaliação — entregas em grupo
 
-A disciplina é avaliada por **5 entregas intermediárias em grupo** (Aulas 1-5, 10% cada) + **apresentação final** (Aula 6, 50%). Cada entrega é um **ZIP no Portal FIAP** gerado a partir do repo PRIVADO do grupo no GitHub — não há fork público.
+A disciplina é avaliada por **5 entregas intermediárias em grupo** (Aulas 1-5, 10% cada) + **projeto integrado final** (entrega ZIP **1 semana após a Aula 6**, 50%, **sem apresentação oral**). Cada entrega é um **ZIP no Portal FIAP** gerado a partir do repo PRIVADO do grupo no GitHub — não há fork público.
 
 Veja [entregas/](entregas/) para a rubrica, o template obrigatório e as instruções de cada entrega. O fluxo completo (curso Alura → repo privado → ZIP via `git archive` → upload no Portal) está em [aulas/01-fundamentos-iac/pos-aula-git.md](aulas/01-fundamentos-iac/pos-aula-git.md).
 

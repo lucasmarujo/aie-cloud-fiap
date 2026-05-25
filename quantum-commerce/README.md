@@ -21,7 +21,7 @@ Cada aula contribui com um bloco do projeto integrado. Esses blocos são entregu
 | 3 | Implantar microserviços/funções do backend (Function HTTP, container) |
 | 4 | Integrar capacidades cognitivas (busca por imagem, sentimento de reviews, voz) |
 | 5 | Construir pipeline de MLOps para o modelo de recomendação |
-| 6 | Análise FinOps + **apresentação final** (50% da nota) |
+| 6 | Análise FinOps + trabalho assistido no projeto integrado final (entrega ZIP 1 semana depois, 50% da nota — **sem apresentação oral**) |
 
 ---
 
@@ -38,7 +38,7 @@ A nota da disciplina vem **inteiramente** deste projeto integrado em grupo, dist
 | Componente | Peso |
 |------------|------|
 | 5 entregas intermediárias (Aulas 1-5, 10% cada) | 50% |
-| Apresentação final (Aula 6) | 50% |
+| Projeto integrado final (entrega 1 semana após a Aula 6) | 50% |
 | **Total** | **100%** |
 
 Não há prova individual. Rubrica completa em [entregas/rubrica.md](../entregas/rubrica.md).

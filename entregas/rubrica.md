@@ -1,6 +1,6 @@
 # Rubrica de Avaliação
 
-Esta rubrica é única e se aplica a todas as **5 entregas de grupo** das Aulas 1-5. A apresentação final na Aula 6 tem rubrica própria (ao final deste documento).
+Esta rubrica é única e se aplica a todas as **5 entregas de grupo** das Aulas 1-5. O **projeto integrado final** (entregue via ZIP até **1 semana após a Aula 6**, **sem apresentação oral**) tem rubrica própria ao final deste documento.
 
 ---
 
@@ -13,7 +13,7 @@ Esta rubrica é única e se aplica a todas as **5 entregas de grupo** das Aulas 
 | Entrega de grupo da Aula 3 | 10% |
 | Entrega de grupo da Aula 4 | 10% |
 | Entrega de grupo da Aula 5 | 10% |
-| Apresentação final (Aula 6) | 50% |
+| Projeto integrado final (entrega 1 semana após a Aula 6) | 50% |
 | **Total** | **100%** |
 
 ---
@@ -118,9 +118,23 @@ Template obrigatório do `entrega-grupo-aulaXX.md`: ver [template-entrega-grupo.
 
 ---
 
-## Rubrica da apresentação final (Aula 6 — 50 pontos)
+## Rubrica do Projeto Integrado Final (50 pontos)
 
-A apresentação final consolida tudo o que foi entregue ao longo das aulas. Cada grupo apresenta em 10-15 minutos.
+O projeto integrado final consolida tudo o que foi construído ao longo das 6 aulas. **Não há apresentação oral** — o grupo entrega um ZIP via Portal FIAP **1 semana após a Aula 6**.
+
+**Conteúdo obrigatório do ZIP `projeto-integrado-grupo-NN.zip`:**
+
+- `README.md` — visão geral da arquitetura QC, decisões-chave, instruções de execução
+- `arquitetura/diagrama-final.png` — diagrama da arquitetura QC com todas as camadas (Aulas 1-5)
+- `arquitetura/decisoes-tecnicas.md` — ADRs (mínimo 5 decisões)
+- `terraform/` — IaC consolidado que provisiona toda a infra (RG + Storage + SQL + Cosmos + AI Search + Function + AI Services + ML Workspace)
+- `function/` — Function da QC com as 5 tools (`/produtos`, `/transcrever`, `/analisar-reviews`, `/analisar-imagem`, `/recomendar`)
+- `tools-spec.md` — spec das 5 tools em JSON Schema para consumo por agentes
+- `finops/` — estimativa de custo mensal + propostas de otimização (export do Pricing Calculator + análise)
+- `reflexao-estrategica.md` — roadmap de 12 meses + lições aprendidas
+- `distribuicao-do-trabalho.md` — quem fez o quê em cada aula e no projeto final
+
+> Detalhes completos do entregável em [projeto-final/INSTRUCOES.md](projeto-final/INSTRUCOES.md).
 
 ### Critério A — Arquitetura cloud completa (15 pontos)
 
@@ -135,9 +149,9 @@ A apresentação final consolida tudo o que foi entregue ao longo das aulas. Cad
 
 | Pontos | Descrição |
 |--------|-----------|
-| 9-10 | Terraform aplicável, sem erros, infra reproduzível, sem segredos hardcoded |
-| 6-8 | TF aplicável com pequenos ajustes; alguma fragilidade |
-| 3-5 | TF parcial ou não aplica sem intervenção |
+| 9-10 | Terraform aplicável (`terraform plan` roda sem erro), infra reproduzível, sem segredos hardcoded |
+| 6-8 | `terraform plan` roda com pequenos ajustes; alguma fragilidade |
+| 3-5 | TF parcial; `plan` falha sem intervenção do corretor |
 | 0-2 | Sem TF ou TF inutilizável |
 
 ### Critério C — Análise de custos (FinOps) (10 pontos)
@@ -158,14 +172,14 @@ A apresentação final consolida tudo o que foi entregue ao longo das aulas. Cad
 | 3-5 | Conexão fraca, AI parece adicionada por cima |
 | 0-2 | Não há conexão com o contexto agentic |
 
-### Critério E — Apresentação e participação coletiva (5 pontos)
+### Critério E — Documentação e clareza do entregável (5 pontos)
 
 | Pontos | Descrição |
 |--------|-----------|
-| 5 | Todos os membros do grupo apresentam; tempo bem distribuído; respostas técnicas consistentes |
-| 3-4 | Maioria apresenta; algumas inconsistências |
-| 1-2 | Apenas 1-2 membros apresentam; coesão fraca |
-| 0 | Apresentação sem participação coletiva |
+| 5 | README claro, instruções reproduzíveis (`terraform apply` rodaria), diagrama legível, reflexão estratégica bem estruturada, evidência de colaboração entre membros (commits + cabeçalho de distribuição) |
+| 3-4 | Documentação presente com lacunas (ex: README sem instruções de execução; diagrama presente mas sem legenda) |
+| 1-2 | Documentação fragmentada — leitor externo precisaria de muito esforço para entender o projeto |
+| 0 | Sem documentação coerente; ZIP é coleção desorganizada de arquivos |
 
 ---
 

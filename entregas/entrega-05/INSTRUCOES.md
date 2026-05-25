@@ -4,7 +4,7 @@
 **Prazo:** até 1 dia antes da Aula 6
 **Onde:** upload de UM ZIP no Portal FIAP (combine no grupo quem faz)
 
-> **Última entrega intermediária!** A Aula 6 não tem entrega ZIP separada — é dedicada ao **trabalho em grupo no projeto integrado final** (50% da nota, ver [apresentacao-final-aula06/](../apresentacao-final-aula06/)).
+> **Última entrega intermediária!** A Aula 6 é dedicada ao **trabalho assistido em grupo no projeto integrado final** (50% da nota, **entrega ZIP 1 semana após a aula, sem apresentação oral**) — ver [projeto-final/](../projeto-final/).
 
 ---
 
@@ -85,7 +85,7 @@ Upload no Portal FIAP, tarefa "Entrega Aula 5".
 [Rubrica única](../rubrica.md). **Foco específico desta entrega:**
 
 - **N1:** dominar **maturidade MLOps** (níveis 0/1/2), o que vai em `param/metric/artifact` no MLflow, e o ciclo **Stage promotion + Rollback**.
-- **N2:** **2.1 (documentação do pipeline)** é a peça que vai para a apresentação final do projeto. **2.2 (5ª tool na Function)** fecha o ciclo iniciado na Aula 3 — Managed Identity no Online Endpoint + fallback gracioso. **2.3 (drift monitoring)** mostra maturidade operacional.
+- **N2:** **2.1 (documentação do pipeline)** é a peça que vai para o projeto integrado final. **2.2 (5ª tool na Function)** fecha o ciclo iniciado na Aula 3 — Managed Identity no Online Endpoint + fallback gracioso. **2.3 (drift monitoring)** mostra maturidade operacional.
 - **N3 (bônus):** **3.3 (MLOps vs LLMOps)** é particularmente valorizado — é a ponte conceitual desta disciplina com o resto do MBA. Vale entender mesmo se não codar.
 - **Reflexão:** discutir **onde a QC está hoje** (provavelmente nível 0) e **onde estará em 12 meses** com o pipeline construído nas Aulas 1-5.
 
@@ -99,11 +99,11 @@ Esta é a **última oportunidade de rodízio** antes da entrega final. Quem fez 
 
 ## Já comece a consolidar para a Aula 6
 
-A Aula 6 é dedicada ao **projeto integrado final** (50% da nota, ZIP no Portal FIAP, sem apresentação ao vivo). O que adiantar agora:
+A Aula 6 é dedicada ao **projeto integrado final** (50% da nota, ZIP no Portal FIAP **1 semana após a aula**, sem apresentação oral). O que adiantar agora:
 
 1. **Diagrama final** da arquitetura QC com **todas as camadas** (Aulas 1-5)
 2. **Terraform consolidado** que provisiona TODA a arquitetura da QC
 3. **5 tools do agente** documentadas: `/produtos`, `/transcrever`, `/analisar-reviews`, `/analisar-imagem`, `/recomendar`
 4. **Esboço da análise FinOps** — calculadora Azure com todos os componentes
 
-Detalhes da entrega final em [../apresentacao-final-aula06/INSTRUCOES.md](../apresentacao-final-aula06/INSTRUCOES.md).
+Detalhes da entrega final em [../projeto-final/INSTRUCOES.md](../projeto-final/INSTRUCOES.md).

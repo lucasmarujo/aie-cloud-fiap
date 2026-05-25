@@ -60,7 +60,7 @@ Upload no Portal FIAP, tarefa "Entrega Aula 3".
 
 - **N1:** dominar a decisão **Function / ACI / Container Apps / AKS** por caso de uso e o conceito de **Managed Identity** como substituto a credenciais.
 - **N2:** a tool de **cálculo de frete** entra como segunda tool consumida pelos agentes na próxima aula. **App Insights** + Container Apps mostram domínio operacional (observabilidade + scale-to-zero containerizado).
-- **N3 (bônus):** o exercício **3.1 (spec de tool)** é o mais valorizado — é o contrato entre o agente e a API que vocês construíram. Bem feito, é peça da apresentação final.
+- **N3 (bônus):** o exercício **3.1 (spec de tool)** é o mais valorizado — é o contrato entre o agente e a API que vocês construíram. Bem feito, é peça do projeto integrado final.
 - **Reflexão:** discutir como a escolha "Function vs Container" muda a forma como o agente consome a tool (cold start, latência, falhas) e o que isso implica para a UX da QC.
 
 ---

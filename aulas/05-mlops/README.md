@@ -42,7 +42,7 @@ Esta aula entrega o **5º recurso** consumido pelos agentes da QC: um **recomend
 
 Esta aula gera a **5ª e última entrega intermediária** (10% da nota): instruções em [entregas/entrega-05/](../../entregas/entrega-05/). Rubrica em [entregas/rubrica.md](../../entregas/rubrica.md).
 
-A Aula 6 é dedicada ao **trabalho em grupo no projeto integrado final** (FinOps + entrega ZIP valendo 50%, **sem apresentação ao vivo**) — ver [entregas/apresentacao-final-aula06/](../../entregas/apresentacao-final-aula06/).
+A Aula 6 é dedicada ao **trabalho em grupo no projeto integrado final** (FinOps + entrega ZIP **1 semana após a Aula 6**, valendo 50%, **sem apresentação oral**) — ver [entregas/projeto-final/](../../entregas/projeto-final/).
 
 ---
 

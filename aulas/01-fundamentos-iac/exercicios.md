@@ -10,7 +10,7 @@
 
 ## Instruções gerais
 
-Esta é a **primeira entrega de grupo** da disciplina. Ao todo são 5 entregas intermediárias (10% cada) + apresentação final na Aula 6 (50%).
+Esta é a **primeira entrega de grupo** da disciplina. Ao todo são 5 entregas intermediárias (10% cada) + projeto integrado final entregue como ZIP **1 semana após a Aula 6** (50%, **sem apresentação oral**).
 
 ### Como o grupo se organiza
 
