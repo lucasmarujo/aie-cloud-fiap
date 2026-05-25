@@ -1,0 +1,11 @@
+$schema: https://azuremlschemas.azureedge.net/latest/managedOnlineDeployment.schema.json
+name: blue
+# IMPORTANTE: deve ser o mesmo nome usado em endpoint.yml
+endpoint_name: rec-qc-<sufixo-unico>
+# Modelo registrado pelo job da Atividade 3 (após primeiro run, será versão 1; com Atividade 3 Parte D, virão v2 e v3)
+model: azureml:recomendador-qc:1
+environment:
+  conda_file: ../job/conda.yml
+  image: mcr.microsoft.com/azureml/openmpi5.0-ubuntu22.04:latest
+instance_type: Standard_DS3_v2
+instance_count: 1

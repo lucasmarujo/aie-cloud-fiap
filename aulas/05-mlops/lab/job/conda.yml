@@ -1,0 +1,13 @@
+name: recomendador-env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip:
+      - mlflow
+      - azureml-mlflow
+      - pandas
+      - scikit-learn
+      - sentence-transformers
+      - torch
+      - transformers
