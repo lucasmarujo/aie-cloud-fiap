@@ -211,56 +211,53 @@ d) Maior obstáculo técnico ou organizacional? Como endereçaria?
 
 ## 🔴 Nível 3 — Avançado: IaC e Automação
 
-### Exercício 3.1 — Terraform: estende o lab com Network Security
+### Exercício 3.1 — Terraform: endurecer a segurança de rede da VM
 
 **Tudo no Cloud Shell — sem instalação.**
 
-Partindo do `main.tf` do lab (Atividade 5), **estenda** com os seguintes recursos:
+O `main.tf` do lab (Atividade 5) já provisiona a VM com VNet + NSG, mas o NSG vem do portal com a regra **SSH liberada para qualquer origem (`*`)** — uma má prática. **Modifique** o código do lab para deixá-lo mais seguro:
 
-1. Uma **Virtual Network** (VNet) com endereçamento `10.10.0.0/16`
-2. Uma **subnet** chamada `subnet-app` com `10.10.1.0/24`
-3. Um **Network Security Group** (NSG) que permite apenas:
-   - HTTP (porta 80) inbound de qualquer origem
-   - HTTPS (porta 443) inbound de qualquer origem
-   - SSH (porta 22) inbound APENAS do seu IP público (`curl ifconfig.me` no Cloud Shell para obter)
-4. Associe o NSG à subnet
+1. **Restrinja o SSH (porta 22)** para aceitar conexões **apenas do seu IP público** (`curl ifconfig.me` no Cloud Shell para obter). Use uma variável `meu_ip` em vez de hardcode.
+2. **Adicione uma segunda subnet** chamada `subnet-app` com `10.0.2.0/24` na mesma VNet, pensando em isolar a futura camada de aplicação da QC.
+3. **Adicione um output** que exponha apenas o IP público da VM (já existe `public_ip_address` — confirme que aparece após o `apply`).
+4. Rode `terraform plan` e identifique no diff **exatamente** qual regra do NSG mudou (não deve recriar a VM).
 
 **Critérios:**
 
-- `terraform plan` + `apply` rodam sem erro
+- `terraform plan` + `apply` rodam sem erro e **não recriam** a VM (apenas atualizam o NSG/rede)
 - `terraform destroy` ao final remove tudo
-- Código commitado no seu fork do repo da disciplina (via github.dev)
+- Código commitado no repositório privado do grupo
 
 **Dica:** Documentação dos recursos:
 
-- `azurerm_virtual_network`
+- `azurerm_network_security_group` (bloco `security_rule` → `source_address_prefix`)
 - `azurerm_subnet`
-- `azurerm_network_security_group`
-- `azurerm_subnet_network_security_group_association`
+- variável `variable "meu_ip"` + `${var.meu_ip}/32`
 
 ---
 
 ### Exercício 3.2 — Bicep equivalente
 
-Pegue o `main.tf` do lab + sua extensão do 3.1 e **traduza para Bicep**.
+Pegue o `main.tf` do lab (a VM + rede) e **traduza para Bicep** — ou parta do `template.json` em `aulas/01-fundamentos-iac/template/` e decompile.
 
 **Tudo no Cloud Shell — `bicep` já está instalado.**
 
-1. Crie `main.bicep` em `~/aula01-bicep/`
-2. Implemente os mesmos recursos (RG + Storage + App Service Plan F1 + VNet + Subnet + NSG)
+1. Crie `main.bicep` em `~/aula01-bicep/` (ou gere com `bicep decompile template.json --outfile main.bicep`)
+2. Implemente os mesmos recursos do lab (RG + VNet + Subnet + NSG + IP + NIC + VM Linux Ubuntu 24.04)
 3. Faça deploy com:
 
 ```bash
 # Bicep precisa do RG já existente OU usar subscription scope
-az group create --name rg-bicep-aula01 --location brazilsouth
+az group create --name rg-bicep-aula01 --location eastus2
 
 az deployment group create \
   --resource-group rg-bicep-aula01 \
-  --template-file main.bicep
+  --template-file main.bicep \
+  --parameters adminPublicKey="$(cat ~/.ssh/id_rsa.pub)"
 ```
 
-4. Compare os arquivos lado a lado e responda no README do seu fork:
-   - Quantas linhas tem cada arquivo?
+4. Compare os três artefatos lado a lado e responda no README do grupo:
+   - Quantas linhas tem cada arquivo (`template.json` ARM × `main.tf` Terraform × `main.bicep`)?
    - Qual ficou mais legível para você?
    - Em que cenário você escolheria Bicep sobre Terraform?
 

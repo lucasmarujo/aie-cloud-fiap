@@ -15,7 +15,7 @@ Atividade 1 — Ativar Azure + Cloud Shell           ~20 min  (L₁)
 Atividade 2 — Resource Group + IAM via portal      ~15 min  (L₂)
 Atividade 3 — Azure Pricing Calculator             ~15 min  (L₃)
 Atividade 4 — Criar VM via portal (a "dor")        ~30 min  (L₄)
-Atividade 5 — Terraform: recriar tudo via IaC      ~30 min  (L₅)
+Atividade 5 — Terraform: recriar a VM via IaC      ~30 min  (L₅)
 Atividade 6 — Destroy + verificação custo zero     ~10 min  (L₆)
 ```
 
@@ -190,18 +190,20 @@ Uma startup de e-commerce precisa hospedar seu backend:
 | Assinatura | Azure for Students |
 | Grupo de recursos | `rg-lab-aula01` |
 | Nome | `vm-lab-aula01` |
-| Região | Brazil South |
+| Região | **East US 2** (`eastus2`) |
 | Opções de disponibilidade | Nenhuma redundância |
-| Imagem | Ubuntu Server 22.04 LTS |
-| Tamanho | **Standard_B1s** |
+| Imagem | **Ubuntu Server 24.04 LTS** |
+| Tamanho | **Standard_D2s_v3** (2 vCPU, 8 GB RAM) |
 | Autenticação | Chave pública SSH |
 | Usuário | `azureuser` |
 | Chave SSH | **Gerar novo par** (nome: `vm-lab-aula01-key`) |
 
-3. Aba **"Discos"**: deixar Standard SSD (LRS), padrão
-4. Aba **"Rede"**: deixar Azure criar a VNet/IP. Confirme que **"Excluir IP público e NIC quando a VM for excluída"** está marcado
+> ⚠️ **Atenção ao custo:** `Standard_D2s_v3` + disco Premium SSD **não é free-tier** (consome ~$0,10/h do seu crédito). Esta é a configuração de referência do lab — por isso a **regra de ouro** vale dobrado: destrua tudo (Atividade 6) assim que terminar.
+
+3. Aba **"Discos"**: tipo de disco do SO = **Premium SSD (LRS)**
+4. Aba **"Rede"**: deixar o Azure criar a VNet (`vm-lab-aula01-vnet`, `10.0.0.0/16`) e o IP público (`vm-lab-aula01-ip`, Standard estático). No NSG, confirme as portas de entrada **SSH (22)**, **HTTP (80)** e **HTTPS (443)**
 5. Aba **"Gerenciamento"**: **desmarque** Application Insights e monitoramento avançado (custo)
-6. **"Revisar + criar"** → observe o custo estimado (~$7-10/mês) → **"Criar"**
+6. **"Revisar + criar"** → observe o custo estimado → **"Criar"**
 7. Janela aparece para baixar a chave SSH — clique em **"Baixar chave privada e criar recurso"**.
 
 > **Atenção (no install):** Em vez de baixar a chave e configurar SSH no seu computador, vamos usar a chave SSH que o **Cloud Shell** já tem (gerada automaticamente). Para isso, no momento da criação da VM, você poderia ter escolhido "Usar chave existente" → cole o conteúdo de `~/.ssh/id_rsa.pub` do Cloud Shell. Como já criamos com chave nova, **vamos demonstrar conexão pelo próprio portal**.
@@ -232,13 +234,24 @@ Uma startup de e-commerce precisa hospedar seu backend:
 
 > **Conte os cliques:** Quantos cliques foram necessários para criar essa VM? Imagine fazer isso em 50 ambientes diferentes. Essa é a dor que o IaC resolve.
 
+> **Dica — o portal já fala IaC:** na tela **"Revisar + criar"** existe o link **"Baixar um modelo para automação"**. Ele gera exatamente o par `template.json` + `parameters.json` que está em [`../template/`](../template/) deste lab — o ARM template desta mesma VM. Na próxima atividade vamos reescrever esse template em Terraform.
+
 ---
 
-## Atividade 5 — Terraform: recriar o ambiente via IaC
+## Atividade 5 — Terraform: recriar a MESMA VM via IaC
 
-**Objetivo:** Provisionar Resource Group + Storage Account + App Service Plan F1 (free) usando Terraform no Cloud Shell. Sentir a diferença de uma abordagem declarativa, idempotente e versionável.
+**Objetivo:** Reprovisionar via Terraform a **mesma VM** que você criou no portal na Atividade 4 (Ubuntu 24.04, `Standard_D2s_v3`, com VNet + NSG + IP público). Esse código é o equivalente Terraform do template ARM que está em [`../template/`](../template/) — aquele que o portal gera no link "Baixar um modelo para automação".
 
-### Passo 1 — Ir para o código Terraform pronto
+### Passo 1 — Garantir a chave SSH no Cloud Shell
+
+A VM autentica **somente por chave SSH**. Garanta que o Cloud Shell já tem um par de chaves:
+
+```bash
+# Cria ~/.ssh/id_rsa e id_rsa.pub se ainda não existirem (não sobrescreve nada)
+test -f ~/.ssh/id_rsa.pub || ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N ""
+```
+
+### Passo 2 — Ir para o código Terraform pronto
 
 O código já está no repositório que você clonou na Atividade 1. Vá até a pasta:
 
@@ -254,17 +267,17 @@ Abra os arquivos no editor para ler o que cada um faz:
 code .
 ```
 
-### Passo 2 — Entender os 3 arquivos
+### Passo 3 — Entender os 3 arquivos
 
 | Arquivo | O que define |
 |---------|--------------|
-| [main.tf](terraform/main.tf) | Providers, sufixo aleatório, Resource Group, Storage Account, App Service Plan |
-| [variables.tf](terraform/variables.tf) | Variável de entrada `location` (padrão `brazilsouth`) |
-| [outputs.tf](terraform/outputs.tf) | Nomes dos recursos exibidos após `apply` |
+| [main.tf](terraform/main.tf) | Provider, Resource Group, VNet + Subnet, NSG (SSH/HTTP/HTTPS), IP público, NIC e a VM Linux |
+| [variables.tf](terraform/variables.tf) | Região (`eastus2`), nome do RG, tamanho da VM, usuário e caminho da chave SSH |
+| [outputs.tf](terraform/outputs.tf) | IP público, nome da VM e o comando SSH pronto |
 
-> Leia o [README](terraform/README.md) da pasta `terraform/` para uma visão geral.
+> Leia o [README](terraform/README.md) da pasta `terraform/` — ele traz uma tabela de **paridade** mostrando que cada recurso bate com o template ARM do portal.
 
-### Passo 3 — Executar o Terraform
+### Passo 4 — Executar o Terraform
 
 No terminal do Cloud Shell, ainda em `~/aie-cloud/aulas/01-fundamentos-iac/lab/terraform`:
 
@@ -272,29 +285,39 @@ No terminal do Cloud Shell, ainda em `~/aie-cloud/aulas/01-fundamentos-iac/lab/t
 # Inicializa providers e baixa plugins
 terraform init
 
-# Mostra o que será criado (sem aplicar)
+# Mostra o que será criado (sem aplicar) — repare nos ~7 recursos
 terraform plan
 
-# Aplica de fato — digite 'yes' quando perguntar
+# Aplica de fato — digite 'yes' quando perguntar (~2-3 min, sobe a VM)
 terraform apply
 ```
 
-Após `apply` concluir (~1 minuto), verifique no portal:
+Após `apply` concluir, conecte na VM usando o output gerado:
 
-- Acesse "Resource groups" → você vê o `rg-iac-aula01-xxxxxx` recém-criado
-- Dentro dele: Storage Account + App Service Plan
-- Compare com `rg-lab-aula01` (criado manualmente) — visualmente são parecidos, mas o IaC é **reproduzível**
+```bash
+# Mostra o comando ssh já com o IP público preenchido
+terraform output -raw ssh_command
+# Copie e cole o comando exibido (ex.: ssh azureuser@20.x.x.x)
+```
 
-### Passo 4 — Demonstração de idempotência
+Verifique no portal:
 
-Adicione uma tag nova ao Resource Group no `main.tf`:
+- Acesse "Resource groups" → você vê o **`rg-iac-aula01`** recém-criado
+- Dentro dele: a VM `vm-lab-aula01` + VNet + NSG + IP — **idêntica** à que você criou na Atividade 4
+- Compare com `rg-lab-aula01` (criado manualmente): mesma VM, mas a versão IaC é **reproduzível** e nasceu de ~150 linhas versionáveis, não de 30 cliques
+
+### Passo 5 — Demonstração de idempotência
+
+Adicione uma tag nova editando o bloco `locals` no topo do `main.tf`:
 
 ```hcl
-tags = {
-  aula         = "1"
-  disciplina   = "cloud-cognitive"
-  provisionado = "terraform"
-  ambiente     = "lab"      # NOVA TAG
+locals {
+  tags = {
+    aula         = "1"
+    disciplina   = "cloud-cognitive"
+    provisionado = "terraform"
+    ambiente     = "lab"      # NOVA TAG
+  }
 }
 ```
 
@@ -302,37 +325,33 @@ Rode novamente:
 
 ```bash
 terraform plan
-# Observe: ele detecta apenas a tag adicional (não recria tudo)
+# Observe: ele detecta apenas a tag adicional nos recursos (não recria a VM)
 terraform apply
 ```
 
 > **Conceito-chave:** O Terraform mantém estado (`terraform.tfstate`) e só faz o que é necessário para chegar ao estado desejado. Isso é **idempotência**.
 
-### Passo 5 — Comparar com Bicep (apenas observação, sem rodar)
+### Passo 6 — Comparar com Bicep (apenas observação, sem rodar)
 
-Como exercício de leitura, veja como o mesmo recurso ficaria em Bicep:
+Como exercício de leitura, veja como a **mesma VM** ficaria em Bicep, decompilando o template ARM que está no lab:
 
 ```bash
-# Exportar a VM criada via portal para ARM template + decompilar para Bicep
-az group export --name rg-lab-aula01 > ~/rg-lab-aula01-arm.json
-
-# Ver primeiras linhas do template ARM gerado
-head -30 ~/rg-lab-aula01-arm.json
-
-# Decompilar ARM para Bicep
-bicep decompile ~/rg-lab-aula01-arm.json
+# Decompilar o template ARM do portal (já versionado no repo) para Bicep
+cd ~/aie-cloud/aulas/01-fundamentos-iac/template
+bicep decompile template.json --outfile ~/vm-lab-aula01.bicep
 
 # Abrir o arquivo Bicep gerado
-code ~/rg-lab-aula01-arm.bicep
+code ~/vm-lab-aula01.bicep
 ```
 
-Compare visualmente Terraform (`main.tf`) e Bicep gerado. Note:
+Compare lado a lado: o `template.json` (ARM, verboso), o `main.tf` (Terraform/HCL) e o Bicep gerado. Note:
 
-- Terraform usa HCL (HashiCorp Configuration Language)
-- Bicep tem sintaxe mais enxuta para Azure
-- Ambos são declarativos e idempotentes
+- ARM (JSON) é o formato nativo do Azure, porém verboso
+- Terraform usa HCL e funciona multi-cloud
+- Bicep tem sintaxe enxuta, específica para Azure, e compila para ARM
+- Todos são declarativos e idempotentes
 
-**✅ Checkpoint:** Você criou recursos via Terraform e observou idempotência ao rodar `apply` duas vezes?
+**✅ Checkpoint:** Você recriou a VM via Terraform, conectou nela pelo output `ssh_command` e observou idempotência ao rodar `apply` duas vezes?
 
 ---
 
@@ -348,7 +367,7 @@ terraform destroy
 # Digite 'yes' quando perguntar
 ```
 
-Aguarde ~1 minuto. Todos os 3 recursos (RG + Storage + App Plan) são removidos.
+Aguarde ~2 minutos. Todos os recursos da versão IaC (RG `rg-iac-aula01` + VM + disco + VNet + NSG + IP) são removidos. **Esse passo é crítico:** a `Standard_D2s_v3` gera custo enquanto existir.
 
 ### Passo 2 — Deletar o Resource Group criado manualmente
 
@@ -408,9 +427,9 @@ Discuta com seu grupo (será necessário para a Aula 2):
 | E-mail `@fiap.com.br` recusado | Conta Microsoft pré-existente | `account.microsoft.com` → desconectar conta antiga → tentar de novo |
 | Portal Azure em inglês | Configuração padrão | ⚙️ no topo → **Idioma e região** → Português (Brasil) |
 | Cloud Shell pede Storage Account | Primeira vez no Cloud Shell | Aceitar criação automática (free) |
-| VM não sobe em Brazil South | Quota da região esgotada | Mudar para **East US** ou **West US 2** |
+| `Standard_D2s_v3` não disponível / quota | Quota da família Dsv3 esgotada na região | Pedir aumento de quota no portal, ou ajustar `vm_size`/`location` em `variables.tf` |
 | `terraform init` falha com erro de provider | Sem internet ou plugin antigo | `rm -rf .terraform && terraform init` |
-| `terraform apply` erro "name already exists" no Storage | Storage Account é nome único global | O `random_string` deveria resolver — confirme que `random_string.sufixo` está sendo usado no nome |
+| `terraform apply` erro `file: no such file` na chave SSH | Cloud Shell sem par de chaves | Rode o Passo 1 da Atividade 5: `ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N ""` |
 | Não consigo ver VM no `rg-lab-aula01` após criar | Criada em outro grupo por engano | Buscar a VM por nome — está em algum lugar; mover ou recriar |
 | "Permission denied" no SSH | Permissões do `.pem` muito abertas | `chmod 400 ~/key.pem` |
 | Custo apareceu maior que $1 | VM esquecida ligada | Deletar o RG inteiro imediatamente |
@@ -423,8 +442,8 @@ O Resource Group e o `main.tf` que você criou hoje são o **embrião da infraes
 
 ```
 infrastructure/
-  ├── main.tf                  # (Aula 1) RG + tags + Storage
-  ├── network.tf               # (Aula 2) VNet + subnets
+  ├── main.tf                  # (Aula 1) RG + VNet + NSG + IP + VM Linux
+  ├── network.tf               # (Aula 2) VNet + subnets adicionais
   ├── storage.tf               # (Aula 2) Blob + Azure SQL + Cosmos
   ├── functions.tf             # (Aula 3) Azure Function App
   ├── cognitive.tf             # (Aula 4) Azure AI Services
