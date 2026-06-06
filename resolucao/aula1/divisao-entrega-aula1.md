@@ -137,9 +137,9 @@ Cole isto na seção **"Distribuição do trabalho"** do `entrega-grupo-aula01.m
 
 | Membro    | Nível assumido        | Item específico                                  |
 |-----------|-----------------------|--------------------------------------------------|
-| <Nome A>  | 🟢 N1 + 🔴 N3 (bônus) | Exercícios 1.1, 1.2, 1.3, 1.4 + 3.3 (multi-cloud) |
-| <Nome B>  | 🟡 N2 + coordenação   | Exercício 2.1 (arquitetura + diagrama) + 2.3; montagem do doc, reflexão e ZIP |
-| <Nome C>  | 🟡 N2 + 🔴 N3 (bônus) | Exercício 2.2 (custos) + 3.1 (Terraform) + 3.2 (Bicep) |
+| <Nome A>            | 🟢 N1 + 🔴 N3 (bônus) | Exercícios 1.1, 1.2, 1.3, 1.4 + 3.3 (multi-cloud) |
+| <Nome B>            | 🟡 N2 + coordenação   | Exercício 2.1 (arquitetura + diagrama) + 2.3; montagem do doc, reflexão e ZIP |
+| Lucas Marujo Amadeu | 🟡 N2 + 🔴 N3 (bônus) | Exercício 2.2 (custos) + 3.1 (Terraform) + 3.2 (Bicep) |
 ```
 
 ---
