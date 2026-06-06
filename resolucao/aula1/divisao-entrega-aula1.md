@@ -36,6 +36,14 @@
 > **Teto da entrega: 10 pts.** O bônus do N3 pode compensar perdas em outros critérios.
 > Os 3 níveis são **divisão de trabalho dentro do grupo**, não escolha individual livre.
 
+## Distribuição do trabalho
+
+| Membro                  | Nível assumido          | Item específico                                                                |
+|-------------------------|-------------------------|--------------------------------------------------------------------------------|
+| Tatiana Mastrogiovanni  | 🟢 N1 + 🔴 N3 (bônus)  | Exercícios 1.1, 1.2, 1.3, 1.4 + 3.3 (multi-cloud)                              |
+| Luciana Chaves D'Olivo  | 🟡 N2 + coordenação    | Exercício 2.1 (arquitetura + diagrama) + 2.3; montagem do doc, reflexão e ZIP  |
+| Lucas Marujo Amadeu     | 🟡 N2 + 🔴 N3 (bônus)  | Exercício 2.2 (custos) + 3.1 (Terraform) + 3.2 (Bicep)                         |
+
 ---
 
 ## 3. A divisão em 3 partes

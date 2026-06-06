@@ -107,18 +107,18 @@ Parti do `main.tf` do lab (Atividade 5) e fiz as quatro mudanças pedidas:
 
 **Código:** `bicep/main.bicep`. **Deploy e comparação:** ver `README.md`.
 
-Como este repositório **não traz o `template.json` ARM**, escrevi o `main.bicep` diretamente a partir do Terraform endurecido (o enunciado permite os dois caminhos). Ele provisiona os mesmos recursos: VNet + 2 subnets (`default` + `subnet-app`) + NSG (SSH travado no meu IP, HTTPS, HTTP) + IP público Standard + NIC + VM Ubuntu 24.04 — e expõe os mesmos outputs.
+Como este repositório **não traz o `template.json` ARM** pronto, escrevi o `main.bicep` diretamente a partir do Terraform endurecido (o enunciado permite os dois caminhos) e **gerei o `template.json` com `bicep build` só para a contagem de linhas**. O Bicep provisiona os mesmos recursos: VNet + 2 subnets (`default` + `subnet-app`) + NSG (SSH travado no meu IP, HTTPS, HTTP) + IP público Standard + NIC + VM Ubuntu 24.04 — e expõe os mesmos outputs.
 
 ### Comparação dos artefatos (item 4)
 
 | Artefato | Linhas | Observação |
-|----------|-------:|------------|
-| `template.json` (ARM) | **~300** _(estimado)_ | Não existe no repo. Rode `bicep build main.bicep --outfile main.json && wc -l main.json` no Cloud Shell para o número exato e substitua aqui. |
+|----------|--------|------------|
+| `template.json` (ARM) | **248** | Gerado com `bicep build main.bicep --outfile main.json` no Cloud Shell |
 | `main.tf` (Terraform, só o arquivo) | **173** | Versão endurecida do 3.1 (com comentários) |
-| `terraform/` (módulo completo: main+variables+outputs) | **258** | Comparação mais justa contra um Bicep que junta params+recursos+outputs |
+| `terraform/` (módulo completo: main+variables+outputs) | **258** | Base mais justa contra um Bicep que junta params+recursos+outputs |
 | `main.bicep` | **207** | Arquivo único (params + recursos + outputs) |
 
-> As contagens de TF e Bicep incluem comentários; "só código" encolhe parecido nos dois. O ARM é estimativa — confirme no Cloud Shell.
+> Na comparação de **arquivo único** (o que o enunciado pede): `main.tf` **173** < `main.bicep` **207** < `template.json` ARM **248**. O ARM é a saída compilada do `bicep build` — sem um único comentário e cheio de `[resourceId(...)]`; ou seja, é ao mesmo tempo o **mais longo e o menos legível**. Como as contagens de TF e Bicep ainda incluem comentários, no "só código" a vantagem dos dois sobre o ARM é ainda maior.
 
 ### Respostas
 
