@@ -162,9 +162,9 @@ Cole isto na seção **"Distribuição do trabalho"** do `entrega-grupo-aula01.m
 - [X] N3 (bônus): 3.2 Bicep e 3.3 multi-cloud documentados — **C e A**
 - [X] Cabeçalho do grupo + tabela de distribuição preenchidos
 - [X] Reflexão coletiva (3–5 parágrafos) — **Pessoa B consolida**
-- [ ] ZIP **não** contém `terraform.tfstate*`, `.env`, `*.pem`, `__pycache__/`
-- [ ] Nome do ZIP: `entrega-grupo-NN-aula01.zip`, pasta interna `qc-grupo-NN-aula01/`
-- [ ] `terraform destroy` / `az group delete` executados (não deixar recurso ligado gastando crédito)
+- [X] ZIP **não** contém `terraform.tfstate*`, `.env`, `*.pem`, `__pycache__/`
+- [X] Nome do ZIP: `entrega-grupo-08-aula01.zip`, pasta interna `qc-grupo-08-aula01/`
+- [X] `terraform destroy` / `az group delete` executados (confirmado pelo Lucas)
 - [ ] Upload feito por **1 só membro** no Portal FIAP
 
 ---

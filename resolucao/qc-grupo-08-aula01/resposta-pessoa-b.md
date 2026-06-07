@@ -110,7 +110,7 @@ Não escolhi **Rehost** puro (só uma VM IaaS) porque manteria o fardo de gerenc
 - [X] Preencher a **data de entrega** no cabeçalho (07/06/2026)
 - [X] Exportar o **diagrama** → `diagramas/arquitetura-qc-aula01.png`
 - [X] Recolher **1 frase da Pessoa A** para a reflexão e fechar os 3–5 parágrafos
-- [ ] Conferir que o ZIP **não** contém `terraform.tfstate*`, `.env`, `*.pem`, `__pycache__/`
-- [ ] Nome do ZIP: `entrega-grupo-08-aula01.zip`, pasta interna `qc-grupo-08-aula01/`
-- [ ] Confirmar com a Pessoa C que `terraform destroy` / `az group delete` foram rodados
+- [X] Conferir que o ZIP **não** contém `terraform.tfstate*`, `.env`, `*.pem`, `__pycache__/`
+- [X] Nome do ZIP: `entrega-grupo-08-aula01.zip`, pasta interna `qc-grupo-08-aula01/`
+- [X] Confirmar com a Pessoa C que `terraform destroy` / `az group delete` foram rodados
 - [ ] **1 só membro** faz o upload no Portal FIAP
