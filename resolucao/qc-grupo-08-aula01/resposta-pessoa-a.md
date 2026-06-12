@@ -76,7 +76,7 @@ Eliminando dívida técnica e liberando o time para atividades de maior valor.
 
 
 Cenário E: 
-R escolhido: Retrain (Revisit)
+R escolhido: Retain (Revisit)
 Justificativa: Mainframe com dados de cliente e que por decisão do Banco Central os dados do cliente devem ficar on-premisse, esse requisito regulatório explícito impede a migração.
 O sistema fica on-premisse até que a regulação seja revisada ou a instituição obtenha autorização específica. Se ocorrer a migração sem cumprir os requisitos regulatórios, ocorre problema grave de compliance.
 

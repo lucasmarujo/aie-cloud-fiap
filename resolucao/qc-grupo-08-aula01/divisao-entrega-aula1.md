@@ -36,6 +36,14 @@
 > **Teto da entrega: 10 pts.** O bônus do N3 pode compensar perdas em outros critérios.
 > Os 3 níveis são **divisão de trabalho dentro do grupo**, não escolha individual livre.
 
+## Distribuição do trabalho
+
+| Membro                  | Nível assumido          | Item específico                                                                |
+|-------------------------|-------------------------|--------------------------------------------------------------------------------|
+| Tatiana Mastrogiovanni  | 🟢 N1 + 🔴 N3 (bônus)  | Exercícios 1.1, 1.2, 1.3, 1.4 + 3.3 (multi-cloud)                              |
+| Luciana Chaves D'Olivo  | 🟡 N2 + coordenação    | Exercício 2.1 (arquitetura + diagrama) + 2.3; montagem do doc, reflexão e ZIP  |
+| Lucas Marujo Amadeu     | 🟡 N2 + 🔴 N3 (bônus)  | Exercício 2.2 (custos) + 3.1 (Terraform) + 3.2 (Bicep)                         |
+
 ---
 
 ## 3. A divisão em 3 partes
@@ -137,26 +145,26 @@ Cole isto na seção **"Distribuição do trabalho"** do `entrega-grupo-aula01.m
 
 | Membro    | Nível assumido        | Item específico                                  |
 |-----------|-----------------------|--------------------------------------------------|
-| <Nome A>  | 🟢 N1 + 🔴 N3 (bônus) | Exercícios 1.1, 1.2, 1.3, 1.4 + 3.3 (multi-cloud) |
-| <Nome B>  | 🟡 N2 + coordenação   | Exercício 2.1 (arquitetura + diagrama) + 2.3; montagem do doc, reflexão e ZIP |
-| <Nome C>  | 🟡 N2 + 🔴 N3 (bônus) | Exercício 2.2 (custos) + 3.1 (Terraform) + 3.2 (Bicep) |
+| Tatiana Mastrogiovanni Haddad            | 🟢 N1 + 🔴 N3 (bônus) | Exercícios 1.1, 1.2, 1.3, 1.4 + 3.3 (multi-cloud) |
+| Luciana Chaves D'Olivo            | 🟡 N2 + coordenação   | Exercício 2.1 (arquitetura + diagrama) + 2.3; montagem do doc, reflexão e ZIP |
+| Lucas Marujo Amadeu | 🟡 N2 + 🔴 N3 (bônus) | Exercício 2.2 (custos) + 3.1 (Terraform) + 3.2 (Bicep) |
 ```
 
 ---
 
 ## 7. Checklist final antes do upload
 
-- [ ] N1 (1.1–1.4) respondido com justificativas — **Pessoa A**
-- [ ] N2: arquitetura + **diagrama PNG** em `diagramas/` — **Pessoa B**
-- [ ] N2: comparativo de custos preenchido — **Pessoa C**
-- [ ] N2: estratégia de migração (2.3) — **Pessoa B**
-- [ ] N3 (bônus): `terraform/` com `main.tf`, `variables.tf`, `outputs.tf` + `README.md` — **Pessoa C**
-- [ ] N3 (bônus): 3.2 Bicep e 3.3 multi-cloud documentados — **C e A**
-- [ ] Cabeçalho do grupo + tabela de distribuição preenchidos
-- [ ] Reflexão coletiva (3–5 parágrafos) — **Pessoa B consolida**
-- [ ] ZIP **não** contém `terraform.tfstate*`, `.env`, `*.pem`, `__pycache__/`
-- [ ] Nome do ZIP: `entrega-grupo-NN-aula01.zip`, pasta interna `qc-grupo-NN-aula01/`
-- [ ] `terraform destroy` / `az group delete` executados (não deixar recurso ligado gastando crédito)
+- [X] N1 (1.1–1.4) respondido com justificativas — **Pessoa A**
+- [X] N2: arquitetura + **diagrama PNG** em `diagramas/` — **Pessoa B**
+- [X] N2: comparativo de custos preenchido — **Pessoa C**
+- [X] N2: estratégia de migração (2.3) — **Pessoa B**
+- [X] N3 (bônus): `terraform/` com `main.tf`, `variables.tf`, `outputs.tf` + `README.md` — **Pessoa C**
+- [X] N3 (bônus): 3.2 Bicep e 3.3 multi-cloud documentados — **C e A**
+- [X] Cabeçalho do grupo + tabela de distribuição preenchidos
+- [X] Reflexão coletiva (3–5 parágrafos) — **Pessoa B consolida**
+- [X] ZIP **não** contém `terraform.tfstate*`, `.env`, `*.pem`, `__pycache__/`
+- [X] Nome do ZIP: `entrega-grupo-08-aula01.zip`, pasta interna `qc-grupo-08-aula01/`
+- [X] `terraform destroy` / `az group delete` executados (confirmado pelo Lucas)
 - [ ] Upload feito por **1 só membro** no Portal FIAP
 
 ---

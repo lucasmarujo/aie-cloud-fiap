@@ -1,0 +1,17 @@
+# Copie este arquivo para `terraform.tfvars` e preencha o seu IP.
+#   cp terraform.tfvars.example terraform.tfvars
+#
+# Descubra seu IP público no Cloud Shell:
+#   curl -s ifconfig.me
+#
+# OBS: o terraform.tfvars NÃO deve ir no ZIP da entrega (pode conter seu IP real).
+# Apenas este .example é versionado.
+
+meu_ip = "203.0.113.45" # <-- troque pelo resultado de: curl -s ifconfig.me
+
+# Opcionais — já têm default em variables.tf, descomente só se quiser sobrescrever:
+# location            = "eastus2"
+# resource_group_name = "rg-iac-aula01"
+# vm_size             = "Standard_D2s_v3"
+# admin_username      = "azureuser"
+# ssh_public_key_path = "~/.ssh/id_rsa.pub"
