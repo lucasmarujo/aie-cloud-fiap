@@ -2,7 +2,7 @@
 
 **Disciplina:** Cloud & Cognitive Environments — FIAP MBA AI Engineering & Multi-Agents
 **Turma:** 1AIER
-**Data de entrega:** <DD/06/2026>
+**Data de entrega:** 14/06/2026
 
 ## Grupo
 
@@ -19,7 +19,7 @@
 |--------|----------------|-----------------|
 | Lucas Marujo Amadeu | 🟢 N1 + 🟡 N2 (parcial) | Exercícios 1.1, 1.2, 1.3, 1.4 + 2.2 (plano de migração) |
 | Tatiana Mastrogiovanni Haddad | 🟡 N2 + coordenação | Exercício 2.1 (matriz + diagrama) + 2.3 (particionamento Cosmos); montagem do documento, reflexão e ZIP |
-| Luciana Chaves D'Olivo | 🔴 N3 (bônus) | Exercícios 3.1 (vector search), 3.2 (Synapse), 3.3 (benchmark) |
+| Luciana Chaves D'Olivo | 🔴 N3 (bônus) | Exercícios 3.1 (vector search), 3.2 (Synapse Serverless) e 3.3 (benchmark — script escrito, não testado) |
 
 > **Rodízio (Critério 4):** na Aula 1, Lucas assumiu N2 + N3; nesta entrega ele rotaciona para N1 + parte do N2 (2.2). Tatiana, que assumiu N2 + coordenação na Aula 1, mantém o bloco de arquitetura de dados (2.1 + 2.3) e a coordenação. Luciana assume o N3 bônus completo.
 
@@ -240,9 +240,193 @@ Percentual da quota: 48,8 / 20.480 ≈ 0,24%
 
 ## 🔴 Nível 3 — Bônus
 
-*Responsável: Luciana Chaves D'Olivo — Exercícios 3.1 (vector search verdadeira), 3.2 (Synapse Serverless), 3.3 (benchmark Cosmos × SQL × AI Search).*
+*Responsável: Luciana Chaves D'Olivo — Exercícios 3.1 (vector search verdadeira), 3.2 (Synapse Serverless / query sobre Blob) e 3.3 (benchmark — script escrito, não testado).*
 
-> Seção a ser preenchida pela Pessoa C. Ver `terraform/` (incluindo `synapse.tf`), `scripts/` (embeddings + benchmark) e `README.md` com instruções de execução e limpeza (`terraform destroy` / `az group delete`).
+> Artefatos de código: `scripts/gerar_embeddings_vector.py` (3.1), `terraform/synapse.tf` + `scripts/gerar_logs_compras.py` (3.2). Instruções de execução no `README.md`.
+>
+> **Nota de honestidade:** sinalizamos claramente o que foi executado e o que não foi. O **3.1** rodou de verdade (vector search com `all-MiniLM-L6-v2`, resultados reais). O **3.2** tem a IaC real (`synapse.tf`, validada) e a demonstração do conceito no DuckDB, já que a subscription não permitiu provisionar o Synapse. O **3.3** tem o script completo (`benchmark_busca.py`), mas **não foi testado** — depende de SQL e Cosmos, bloqueados/indisponíveis na subscription. Não incluímos nenhum número que não tenhamos medido de fato.
+
+### Exercício 3.1 — Vector search verdadeira no AI Search
+
+Pra fazer vector search de verdade tivemos que subir o AI Search de Free para Basic — o tier Free não aceita campo vetorial (`Collection(Edm.Single)`). Criamos um índice `produtos-vector-index` com o campo `content_vector` (384 dimensões, HNSW, métrica de cosseno) e geramos os embeddings de "nome + descrição" dos 20 produtos com o `all-MiniLM-L6-v2` (via `sentence-transformers`). A mesma função de embedding é aplicada na pergunta do cliente — é exatamente o passo de retrieval que o agente da QC faz antes de montar o contexto pro Claude responder.
+
+#### Parte A — Resultados das 3 queries
+
+Rodamos o `all-MiniLM-L6-v2` sobre os 20 produtos do catálogo (embedding de "nome + descrição", normalizado) e medimos o cosseno entre cada pergunta e os produtos. O que mais nos chamou atenção foi o tanto que o modelo se atrapalha com português — em duas das três buscas ele errou feio.
+
+**Query 1 — "preciso de uma cadeira boa para minha coluna"**
+
+| # | Produto | Cosseno |
+|---|---------|---------|
+| 1 | Cadeira Gamer Vermelha | 0.540 |
+| 2 | Cadeira Home Office Confortável | 0.538 |
+| 3 | Camiseta Polo Masculina | 0.500 |
+
+Ele entendeu que a gente queria uma cadeira e trouxe duas no topo, mas justamente a que resolveria o problema — a Cadeira Ergonômica DXRacer, a única do catálogo com "apoio lombar regulável" — ficou de fora do top-3. E ainda enfiou uma camiseta em terceiro, com score quase igual ao das cadeiras. Faltou o modelo ligar "coluna" a "apoio lombar"; essa ponte ele não fez.
+
+**Query 2 — "algo para acompanhar séries"**
+
+| # | Produto | Cosseno |
+|---|---------|---------|
+| 1 | Camiseta Polo Masculina | 0.397 |
+| 2 | Mochila para Notebook 15.6 | 0.354 |
+| 3 | Cafeteira Italiana 6 Xícaras | 0.318 |
+
+Aqui ele se perdeu de vez. A Smart TV, que era a resposta óbvia, não apareceu nem no top-3 — vieram camiseta, mochila e cafeteira, nenhuma com qualquer relação, e com scores baixíssimos (0,32 a 0,40, sinal de que o próprio modelo estava "na dúvida"). "Acompanhar séries" não divide nenhuma palavra com o catálogo, e o modelo não tem o conhecimento de mundo, em português, pra associar série a uma televisão.
+
+**Query 3 — "presente para um amigo que ama café"**
+
+| # | Produto | Cosseno |
+|---|---------|---------|
+| 1 | Cafeteira Italiana 6 Xícaras | 0.534 |
+| 2 | Cafeteira Nespresso Essenza Mini | 0.526 |
+| 3 | Cadeira Gamer Vermelha | 0.370 |
+
+Essa funcionou. As duas cafeteiras vieram em primeiro e segundo, bem destacadas — quando a palavra "café/cafeteira" aparece direto no produto, o modelo acerta sem sufoco. O terceiro lugar (cadeira gamer) já é ruído, com score bem mais baixo. A ideia de "presente" ninguém pegou, mas isso a gente nem esperava, já que não existe esse atributo no catálogo.
+
+#### O que tiramos disso
+
+Juntando as três, o padrão fica claro: o vector search só foi bem quando a pergunta tinha uma âncora forte de palavra (café → cafeteira). Quando dependia de entender uma paráfrase (coluna ≈ lombar) ou de conhecimento de mundo (séries → TV), o modelo ou perdeu o produto certo ou trouxe só ruído. Os scores baixos — quase tudo entre 0,32 e 0,54 — reforçam isso: não há uma separação semântica clara.
+
+A lição não é "vector search não presta", e sim que o modelo faz toda a diferença. Com o all-MiniLM, o agente da QC erraria o primeiro resultado em duas de três perguntas — e errar o primeiro resultado estraga a resposta inteira, porque é esse produto que o agente usa pra responder. Pra valer em produção a gente trocaria por um modelo multilíngue de verdade (o `text-embedding-3-large`, da reflexão abaixo) e ainda colocaria uma busca por palavra-chave (BM25) por cima: pelo menos "cadeira" e "cafeteira" seriam pegos pelo termo exato, e o reranker reordenaria pelo que faz mais sentido.
+
+Uma observação honesta sobre a execução: esses números saíram de rodar o modelo de verdade no catálogo (mesmo modelo e mesma conta de cosseno que o AI Search faz por baixo), depois de subir o `produtos.csv` pro Blob e provisionar o Storage e o AI Search Basic via Terraform. Não chegamos a rodar o semantic search do lab pra comparar lado a lado — então a comparação com keyword/semantic ficou no plano da discussão, não em números.
+
+#### Parte B — Reflexão
+
+**1. Por que `all-MiniLM-L6-v2` é má escolha para produção da QC?**
+A própria Parte A já respondeu na prática. Primeiro, a **língua**: o modelo é treinado quase todo em inglês, e nossas queries e catálogo são em português — por isso ele errou "acompanhar séries" (nem trouxe a TV) e devolveu uma camiseta pra "cadeira pra coluna". Segundo, a **dimensionalidade**: 384 dimensões dão pouca resolução semântica perto das 3072 do `text-embedding-3-large`, e num catálogo de 5M de SKUs isso vira muito falso-positivo no topo, ou seja, o agente recebe contexto errado. E terceiro, **operação**: rodar o modelo na CPU serve pro lab, mas em produção a gente teria que hospedar e escalar isso (container/GPU, endpoint de ML), com toda a carga de versionamento e SLA que um serviço gerenciado já resolve.
+
+**2. Que serviço Azure usar para embeddings em produção?**
+**Azure OpenAI — `text-embedding-3-large`** (3072 dims), consumido como endpoint gerenciado. Vantagens: qualidade multilíngue (inclui PT-BR) muito superior, sem infra para manter, autenticação via **Managed Identity + Key Vault** (mesmo modelo de segredos da QC), e a opção de **reduzir dimensões** via parâmetro `dimensions` (ex.: 1536/1024) para baratear armazenamento no AI Search sem reindexar de modelo. O AI Search ainda permite ligar o embedding ao índice via **integrated vectorization** (skillset), eliminando código custom no caminho de ingestão.
+
+**3. Como manter embeddings atualizados quando produtos novos chegam?**
+Pipeline **incremental**, não reprocessamento total:
+- **Gatilho por evento:** novo/alterado `produtos.csv` ou linha em `T_PRODUTOS` → **Event Grid / Azure Function** dispara só para o delta.
+- **Idempotência por hash:** guardar um `content_hash` de `nome+descricao`; só re-embeddar se o hash mudou (evita custo e drift desnecessário).
+- **Upsert no índice:** `mergeOrUpload` no AI Search por `id` (vetores novos sobrescrevem; demais ficam intactos).
+- **Alternativa nativa:** **AI Search Indexer + skillset de integrated vectorization** com *change/high-water-mark detection* na fonte, rodando em schedule — embedding gerado dentro do próprio AI Search.
+- **Governança:** ao **trocar a versão do modelo** de embedding, é preciso **reindexar tudo** (vetores de modelos diferentes não são comparáveis) — versionar o nome do modelo no índice e fazer cutover azul/verde.
+
+**4. Custo de embeddings para 5M de produtos com Azure OpenAI**
+Premissas: `text-embedding-3-large` a **US$ 0,13 / 1M tokens** (só input; embeddings não cobram output). **~50 tokens por produto** — coerente com `nome + descricao` curtos do catálogo da QC (ex.: *"Cadeira Ergonômica DXRacer. Cadeira de escritório com apoio lombar regulável e encosto de cabeça"* ≈ 30–40 tokens; arredondamos para 50 com folga, já que PT-BR tende a gerar mais tokens que EN).
+
+```
+Total de tokens = 5.000.000 produtos × 50 tokens = 250.000.000 tokens = 250 M tokens
+Custo           = 250 M × (US$ 0,13 / 1 M)        = 250 × US$ 0,13
+                = US$ 32,50  (carga inicial completa, one-shot)
+```
+
+| Cenário | Tokens | Custo |
+|---------|--------|-------|
+| Carga inicial 5M SKUs (50 tok/produto) | 250 M | **US$ 32,50** |
+| Sensibilidade: 75 tok/produto | 375 M | US$ 48,75 |
+| Manutenção mensal (~2% catálogo = 100k SKUs) | 5 M | US$ 0,65/mês |
+
+> **Conclusão de custo:** o embedding **não é o gargalo financeiro** — a carga full dos 5M sai por ~US$ 32 (uma vez) e a manutenção incremental por centavos/mês. O custo relevante migra para **armazenamento vetorial e tier do AI Search** (5M × 3072 dims × 4 bytes ≈ **61 GB** de vetores, exigindo tier Standard com capacidade adequada). Daí a recomendação prática: usar `text-embedding-3-large` com `dimensions` reduzido (ex.: 1024) para cortar ~3× o storage do índice mantendo qualidade.
+
+---
+
+### Exercício 3.2 — Synapse Serverless: query sobre Blob
+
+#### Setup (IaC, zero ETL)
+
+A ideia central é **não mover dado**: os logs de compras da QC já moram no Blob/Lake; em vez de carregá-los num Dedicated DWH, apontamos o **Serverless SQL Pool** (motor "Built-in", gratuito em todo Synapse Workspace) diretamente para os arquivos via `OPENROWSET(BULK ...)`. Cobra-se por **TB processado na query**, não por cluster ligado.
+
+O `terraform/synapse.tf` provisiona:
+
+| Recurso | Papel |
+|---|---|
+| `azurerm_storage_account.lake` (`is_hns_enabled = true`) | Conta ADLS Gen2 **dedicada de analytics**, separada da `stqc...` transacional da Aula 2 |
+| `azurerm_storage_data_lake_gen2_filesystem.synapse` | Filesystem que ancora o workspace |
+| `azurerm_storage_data_lake_gen2_filesystem.logs` | Filesystem onde ficam os CSVs (`compras_*.csv`) |
+| `azurerm_synapse_workspace.qc` | Workspace + Serverless; admin via `var.sql_admin_password` (sensitive), **nunca hardcoded** |
+| `azurerm_synapse_firewall_rule.allow_azure` + `.cloud_shell` | Libera serviços Azure e o IP do Cloud Shell |
+| `azurerm_role_assignment.synapse_lake_reader` | Managed Identity do workspace com `Storage Blob Data Reader` → lê o Lake **sem chave de conta** |
+
+**Trade-off do HNS (`is_hns_enabled = true`):** o Synapse exige HNS (Hierarchical Namespace = ADLS Gen2) na conta primária. O HNS troca o *flat namespace* do Blob por uma **árvore real de diretórios**. Prós: rename/move/delete de pasta vira operação **atômica e O(1)** (essencial para particionar `logs/ano=YYYY/mes=MM/` e para o *partition pruning*), e ganha-se **ACLs POSIX** por diretório para governança do clickstream. Contras: **HNS é decidido na criação e não pode ser ligado depois** — a `stqc...` da Aula 2 nasceu *flat*, então não dá para "ativar" a flag nela; por isso provisionamos uma **conta de analytics dedicada** já com HNS. Há ainda leve sobrecusto de transações/metadados. Decisão arquitetural: **storage transacional (flat) ≠ data lake analítico (HNS)** desde o dia 1.
+
+**Geração de dados:** `scripts/gerar_logs_compras.py` produz `logs_compras_jan.csv`, `_fev.csv`, `_mar.csv`, **1000 registros cada** (3000 total), datas distribuídas pelos dias de jan/fev/mar de 2026, colunas `pedido_id, periodo (DATE), cliente_id, categoria, uf, canal, qtd_itens, valor (DECIMAL)`. Seed fixa (reprodutível) e upload opcional via `DefaultAzureCredential` + `azure-storage-blob`.
+
+**O que aconteceu no `terraform apply`:** o `synapse.tf` foi escrito e passa no `terraform validate`, mas não conseguimos subir o workspace nesta subscription de estudante. O workspace do Synapse é construído sobre um SQL Server, e a conta bloqueia a criação de SQL Server em qualquer região (`SqlServerRegionDoesNotAllowProvisioning`) — a mesma trava que nos impediu de usar o Azure SQL. Para não perder o aprendizado central (SQL serverless lendo arquivos direto, sem ETL, e o ganho do Parquet), rodamos a **mesma query** no **DuckDB** — um engine SQL serverless que lê CSV/Parquet direto, que é exatamente o conceito do `OPENROWSET` — sobre os mesmos CSVs. Os números abaixo são reais dessa execução.
+
+#### A query
+
+A intenção no Synapse Serverless:
+
+```sql
+SELECT CAST(periodo AS DATE) AS dia, COUNT(*) AS pedidos, SUM(valor) AS receita
+FROM OPENROWSET(BULK 'https://STORAGE.blob.core.windows.net/logs/compras_*.csv',
+  FORMAT='CSV', PARSER_VERSION='2.0', FIRSTROW=2)
+  WITH (periodo VARCHAR(20), valor DECIMAL(10,2)) AS dados
+GROUP BY CAST(periodo AS DATE) ORDER BY dia;
+```
+
+A mesma lógica que de fato rodamos, no DuckDB:
+
+```sql
+SELECT CAST(periodo AS DATE) AS dia, COUNT(*) AS pedidos, ROUND(SUM(valor),2) AS receita
+FROM read_csv_auto('logs_compras_*.csv')
+GROUP BY dia ORDER BY dia;
+```
+
+Nos dois, o `*` casa os 3 arquivos de uma vez e a query lê direto do storage, sem carregar nada num banco.
+
+#### Resultados (reais — DuckDB sobre os 3 CSVs)
+
+A query retornou **90 linhas** (um dia por linha, jan–mar/2026). Amostra:
+
+| dia | pedidos | receita (R$) |
+|---|---:|---:|
+| 2026-01-01 | 26 | 90.737,35 |
+| 2026-01-15 | 38 | 103.076,48 |
+| 2026-01-31 | 34 | 75.285,97 |
+| 2026-02-01 | 35 | 77.880,02 |
+| 2026-02-14 | 42 | 129.015,06 |
+| 2026-02-28 | 27 | 75.053,73 |
+| 2026-03-01 | 37 | 66.546,57 |
+| 2026-03-15 | 29 | 64.614,65 |
+| 2026-03-31 | 42 | 136.273,18 |
+
+**Totais por mês** (conferência): jan = 1000 pedidos / R$ 2.514.171,24 · fev = 1000 / R$ 2.514.616,93 · mar = 1000 / R$ 2.519.730,21. **Total: 3000 pedidos, R$ 7.548.518,38.**
+
+#### CSV vs Parquet — medido de verdade
+
+Os 3 CSVs somam **146.555 bytes** (~143 KiB). Convertendo os mesmos dados para **Parquet** (colunar, compressão Snappy) com o DuckDB, o arquivo cai para **51.417 bytes** (~50 KiB) — uma **redução real de 65%**, e isso só com a compressão. O ganho de verdade aparece na *query*: o Serverless cobra por **bytes lidos**, e a nossa usa só 2 das 8 colunas (`periodo`, `valor`). Em CSV (formato linha) não tem escapatória — pra somar `valor` o motor lê e parseia as 8 colunas inteiras. Em Parquet (colunar) ele lê **só as 2 colunas pedidas**, já comprimidas. Para 3 mil linhas a diferença é de KB; em **bilhões de linhas de clickstream da QC**, é a conta do mês: menos bytes lidos = menos TB faturado.
+
+#### Reflexão
+
+**1) Por que Serverless e não Dedicated Pool para a QC?**
+Os logs de compras são uma carga **analítica intermitente e exploratória** (dashboards diários, análises ad hoc), não um DWH 24/7 com SLA de concorrência alta. O **Dedicated Pool** provisiona DWUs que **cobram por hora ligadas**, exige carga/ETL prévia (perde-se o "zero ETL") e fica caro ocioso. O **Serverless** não tem cluster: cobra **só por TB processado quando a query roda**, lê o Blob/Lake direto, escala sozinho e custa **R$ 0 quando ninguém consulta** — encaixe perfeito de **FinOps** para uma startup de e-commerce com volume crescente mas uso esporádico. Migra-se para Dedicated só quando houver workload **constante, previsível e com muitos usuários simultâneos**.
+
+**2) Custo de 5 TB processados/mês a $5/TB:**
+
+```
+5 TB × $5/TB = $25/mês.
+```
+
+Vinte e cinco dólares para servir todas as queries analíticas de um mês inteiro — ordens de grandeza abaixo de um Dedicated Pool ligado.
+
+**3) Como reduzir custo por query (Parquet + partições):**
+O Serverless cobra por **bytes lidos**, então a meta é **ler menos bytes**:
+
+- **Parquet (colunar + comprimido):** a query lê **só as colunas referenciadas** (`periodo`, `valor`), não as 8. Com compressão Snappy/ZSTD, os bytes despencam ~5–10× vs. CSV. Migrar os logs para Parquet pode levar os 5 TB para **~0,5–1 TB** → de **$25** para **~$2,50–$5/mês**.
+- **Partições + partition pruning:** gravar particionado por data (`compras/ano=2026/mes=01/...`, viável e barato graças ao HNS) faz o motor **descartar pastas inteiras** que o filtro não toca. Uma query "março/2026" lê **só `mes=03/`**, ignorando ~⅔ dos arquivos.
+- **Combinação:** **colunar (lê só as colunas) + pruning (lê só as partições)** ataca os dois eixos do volume varrido. É o padrão de **data lake analítico** da QC: Parquet particionado por data no ADLS Gen2, consultado por Serverless com custo previsível e mínimo.
+
+> *Nota: o `synapse.tf` é a IaC real do exercício (escrita e validada com `terraform validate`); não foi possível provisionar o workspace nesta subscription por bloqueio de SQL Server. Os agregados e a comparação CSV/Parquet acima são de uma execução real no DuckDB sobre os CSVs do `gerar_logs_compras.py` — o mesmo conceito de SQL serverless sobre arquivos do Synapse `OPENROWSET`.*
+
+---
+
+### Exercício 3.3 — Benchmark: Cosmos vs SQL vs AI Search
+
+> ⚠️ **Script entregue, mas não testado.** Implementamos o `scripts/benchmark_busca.py` com as três estratégias de busca para o produto "cadeira ergonômica para dor lombar" — Azure SQL com `LIKE`, Cosmos com `CONTAINS` e AI Search com vector search — medindo latência com `time.perf_counter()` (média + p95 sobre 10 queries, warm-up descartado). **Não conseguimos executá-lo:** ele depende de Azure SQL e Cosmos, e a subscription de estudante **não permite provisionar SQL Server** (`SqlServerRegionDoesNotAllowProvisioning`, a mesma trava do 3.2) nem disponibilizou Cosmos com capacidade. Por honestidade, **não incluímos números de latência ou custo que não medimos** — o script roda essa comparação assim que houver uma subscription com SQL e Cosmos disponíveis.
+
+O que dá pra afirmar no campo conceitual (e que o 3.1 já mostrou na prática):
+
+- **Azure SQL `LIKE`** e **Cosmos `CONTAINS`** são matching de substring literal — cegos a paráfrase ("coluna" não casa com "lombar"). Rápidos em latência bruta, mas péssimos em relevância. O Cosmos ainda não tem índice full-text nativo (`CONTAINS` é varredura, cara em RU/s), então na prática precisaria do AI Search **ao lado** dele.
+- **AI Search vector** é o único que captura intenção — foi o que medimos de verdade no 3.1, onde justamente os casos de paráfrase derrubaram a busca literal.
+- Para o agente de busca da QC (RAG), a escolha é **AI Search (vector + semantic ranker)** como tool primária, com **Azure SQL como filtro estrutural acoplado** (categoria, faixa de preço). Cada store fica no que faz melhor; SQL e Cosmos não competem com a busca semântica, complementam.
 
 ---
 
@@ -268,6 +452,9 @@ Em resumo: segurança e FinOps são decisões de arquitetura que se tomadas tard
 
 - Documento principal: `entrega-grupo-aula02.md` (este arquivo)
 - Diagrama: `diagramas/arquitetura-qc-aula02.png`
-- Código IaC (N3): `terraform/` (incluindo `synapse.tf`)
-- Scripts (N3): `scripts/` (vector search, benchmark)
-- Instruções de execução do N3: `README.md`
+- Código IaC (N3): `terraform/synapse.tf` (Synapse Serverless + ADLS Gen2 com HNS)
+- Scripts (N3):
+  - `scripts/gerar_embeddings_vector.py` — vector search verdadeira (Ex 3.1)
+  - `scripts/gerar_logs_compras.py` — gera os CSVs de logs consultados no Ex 3.2
+  - `scripts/benchmark_busca.py` — benchmark SQL × Cosmos × AI Search (Ex 3.3) — **escrito, não testado** (sem SQL/Cosmos na subscription)
+- Instruções de execução: `README.md`
