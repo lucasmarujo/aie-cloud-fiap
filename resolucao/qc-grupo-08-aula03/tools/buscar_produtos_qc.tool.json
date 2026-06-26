@@ -1,0 +1,17 @@
+{
+  "name": "buscar_produtos_qc",
+  "description": "Busca produtos no catálogo da Quantum Commerce por categoria e/ou trecho do nome. Use quando o usuário quiser encontrar produtos, ver preço/estoque, ou comparar itens de uma categoria (ex: 'tem cadeira de escritório?', 'quais eletrônicos vocês têm?'). Para frete/prazo de entrega, use a tool calcular_frete_qc.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "categoria": {
+        "type": "string",
+        "description": "Categoria do produto (ex: 'moveis', 'eletronicos', 'cozinha'). Opcional."
+      },
+      "nome": {
+        "type": "string",
+        "description": "Substring do nome do produto (ex: 'cadeira', 'fone'). Opcional."
+      }
+    }
+  }
+}
