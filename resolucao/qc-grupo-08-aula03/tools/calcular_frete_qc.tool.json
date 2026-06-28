@@ -1,0 +1,24 @@
+{
+  "name": "calcular_frete_qc",
+  "description": "Calcula o VALOR do frete (em R$) e o PRAZO estimado de entrega (em dias úteis) de um pedido da Quantum Commerce, a partir do CEP de origem (centro de distribuição), do CEP de destino (endereço do cliente) e do peso total do pedido em quilogramas. Use esta tool sempre que o usuário perguntar quanto custa o frete, quanto tempo leva para chegar, ou comparar prazos/custos de entrega para um endereço. NÃO use para consultar preço de produto, estoque ou características do item — para isso use a tool buscar_produtos_qc. Exemplos de quando chamar: 'Quanto fica o frete para o CEP 20040-002?', 'Em quantos dias chega em Fortaleza?', 'O frete de 3kg para Porto Alegre sai mais caro que para o Rio?'. Se o usuário não informar o CEP de destino ou o peso, peça esses dados antes de chamar a tool.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "cep_origem": {
+        "type": "string",
+        "description": "CEP de origem do envio (8 dígitos, com ou sem hífen). Em geral é o centro de distribuição da QC. Default sugerido quando não informado: 01310-100 (SP). Ex: '01310-100'."
+      },
+      "cep_destino": {
+        "type": "string",
+        "description": "CEP de entrega do cliente (8 dígitos, com ou sem hífen). Ex: '20040-002'. Obrigatório — peça ao usuário se faltar."
+      },
+      "peso_kg": {
+        "type": "number",
+        "description": "Peso total do pedido em quilogramas (maior que 0, máximo 100). Ex: 2.5. Obrigatório — peça ao usuário se faltar.",
+        "minimum": 0.01,
+        "maximum": 100
+      }
+    },
+    "required": ["cep_origem", "cep_destino", "peso_kg"]
+  }
+}
