@@ -20,9 +20,9 @@
 
 | Membro | Nível assumido | Item específico |
 |--------|----------------|-----------------|
-| **Lucas Marujo Amadeu** | 🟡 **N2 (completo)** | **Exercícios 2.1 (tool de frete), 2.2 (App Insights), 2.3 (Container Apps) — este documento** |
-| Luciana Chaves D'Olivo | 🟢 N1 + coordenação | Exercícios 1.1, 1.2, 1.3, 1.4; montagem do `entrega-grupo-aula03.md` e ZIP |
-| Tatiana Mastrogiovanni Haddad | 🔴 N3 (bônus) | Exercícios 3.1 (spec de tool), 3.2 (benchmark), 3.3 (CI/CD + OIDC) |
+| **Lucas Marujo Amadeu** | 🟢 N1 + coordenação | Exercícios 1.1, 1.2, 1.3, 1.4; montagem do `entrega-grupo-aula03.md` e ZIP |
+| **Luciana Chaves D'Olivo** | 🟡 **N2 (completo)** | **Exercícios 2.1 (tool de frete), 2.2 (App Insights), 2.3 (Container Apps) — este documento** |
+| **Tatiana Mastrogiovanni Haddad** | 🔴 N3 (bônus) | Exercícios 3.1 (spec de tool), 3.2 (benchmark), 3.3 (CI/CD + OIDC) |
 
 > **Rodízio (Critério 4):** na Aula 1 o Lucas fez N2 + N3; na Aula 2 rotacionou
 > para N1 + parte do N2 (2.2 — migração). Cumprindo a regra "quem fez N1 nas
