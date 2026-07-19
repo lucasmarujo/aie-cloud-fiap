@@ -18,8 +18,8 @@
 | Membro | Nível assumido | Item específico |
 |--------|----------------|-----------------|
 | **Tatiana Mastrogiovanni Haddad** | 🟢 **N1 (completo)** + 🟡 **N2 (parcial)** + 🔴 **N3 (parcial)** |  Exercícios 1.1, 1.2, 1.3, 1.4 + N2 2.3 (Vision vs Custom Vision) + N3 3.2 Custom Vision |
-| ** ** | 🟡 **N2 (parcial)** + 🔴 **N3 (parcial)** | N2 2.1 (pipeline reviews) + N3 3.1 (embeddings Azure OpenAI) |
-| ** ** | 🟡 **N2 (parcial)** + 🔴 **N3 (parcial)**  | N2 2.2 (casos de Speech) + N3 3.3 (sumarização LLM) |
+| **Luciana Chaves D'Olivo** | 🟡 **N2 (parcial)** + 🔴 **N3 (parcial)** | N2 2.1 (pipeline reviews) + N3 3.1 (embeddings Azure OpenAI) |
+| **Lucas Marujo Amadeu** | 🟡 **N2 (parcial)** + 🔴 **N3 (parcial)**  | N2 2.2 (casos de Speech) + N3 3.3 (sumarização LLM) |
 
 
 
