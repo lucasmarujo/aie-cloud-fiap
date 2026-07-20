@@ -68,6 +68,39 @@ resource "azurerm_role_assignment" "shell_openai_user" {
   principal_id         = data.azurerm_client_config.current.object_id
 }
 
+# ── App Settings do Azure OpenAI na Function (N3 3.3 — Pessoa 3 / Lucas) ──────
+# A Function App é gerenciada pelo Terraform da Aula 4 e aqui entra apenas como
+# `data`, então não dá para alterar seu bloco `app_settings` sem conflito de posse.
+# Este null_resource injeta as settings que a rota /sumarizar-reviews-produto
+# precisa via `az`, de forma idempotente, após o deployment gpt-4o-mini existir.
+# ponytail: local-exec + az CLI; se um dia a Function migrar para este stack,
+# trocar por app_settings nativo no resource azurerm_linux_function_app.
+resource "null_resource" "fn_openai_appsettings" {
+  triggers = {
+    endpoint   = azurerm_cognitive_account.openai.endpoint
+    deployment = azurerm_cognitive_deployment.chat.name
+    fn_name    = data.azurerm_linux_function_app.fn.name
+  }
+
+  provisioner "local-exec" {
+    command = <<-CMD
+      az functionapp config appsettings set \
+        --name ${data.azurerm_linux_function_app.fn.name} \
+        --resource-group ${data.azurerm_resource_group.rg.name} \
+        --settings \
+          AZURE_OPENAI_ENDPOINT=${azurerm_cognitive_account.openai.endpoint} \
+          AZURE_OPENAI_DEPLOYMENT=${azurerm_cognitive_deployment.chat.name} \
+          COSMOS_DB=qc-db \
+          COSMOS_CONTAINER_REVIEWS=reviews
+    CMD
+  }
+
+  depends_on = [
+    azurerm_cognitive_deployment.chat,
+    azurerm_role_assignment.fn_openai_user,
+  ]
+}
+
 # ── Outputs ───────────────────────────────────────────────────────────────────
 output "openai_endpoint" {
   description = "Endpoint do Azure OpenAI — use como AZURE_OPENAI_ENDPOINT"

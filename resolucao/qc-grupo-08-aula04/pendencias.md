@@ -2,7 +2,10 @@
 
 > Checklist do que falta para a entrega ficar **100%**. Marque `[x]` conforme concluir.
 > Base: `entregas/entrega-04/INSTRUCOES.md` + `aulas/04-servicos-cognitivos/exercicios.md`.
-> Estado atual da pasta: só existem `respostas-pessoa1-aula04.md` e `respostas-pessoa3-aula04.md`.
+> **Revisão em 19/07/2026 (pós-pull):** Pessoa 2 subiu `function/`, `terraform/`,
+> `scripts/`, `scripts_dependencia_aula2/` e `README.md`. Estado atual da pasta:
+> `respostas-pessoa1/2/3-aula04.md` + `README.md` + `function/` + `terraform/` +
+> `scripts/` + `scripts_dependencia_aula2/`.
 
 ## Divisão (referência)
 
@@ -14,28 +17,29 @@
 
 ## 🔴 Bloqueadores críticos (sem isto o ZIP não fecha / partes não rodam)
 
-- [ ] **Consolidar o `entrega-grupo-aula04.md`** (documento principal do ZIP) a partir dos 3 `respostas-pessoaN`. Usar `entregas/template-entrega-grupo.md`. **Hoje não existe.**
-- [ ] **Terraform `gpt-4o-mini`:** o exemplo do 3.1 só provisiona `text-embedding-3-small`. A rota 3.3 (Lucas) precisa de um deployment de **chat**. Adicionar `azurerm_cognitive_deployment "gpt-4o-mini"` no mesmo `azurerm_cognitive_account.openai`. **(dono: Pessoa 2, dependência do Lucas)**
-- [ ] **Roles da Managed Identity no AI Services / OpenAI:**
-  - `Cognitive Services User` (Language/Vision) para a MI da Function
-  - `Cognitive Services OpenAI User` para a MI da Function (necessário para o 3.3)
-  - `custom_subdomain_name` habilitado nos `azurerm_cognitive_account` (pré-requisito de MI — Ex. 1.3)
-- [ ] **Pasta `function/`** com o `function_app.py` evoluído compartilhado (base 2.1 + rota 3.3). **Hoje não existe.**
-- [ ] **Pasta `terraform/`** com o `main.tf` evoluído (AI Services + Key Vault + Function + roles + Azure OpenAI). **Hoje não existe.**
+- [x] **Consolidar o `entrega-grupo-aula04.md`** (documento principal do ZIP) — ✅ criado a partir dos 3 `respostas-pessoaN` seguindo o `template-entrega-grupo.md` (N1 + N2 + N3 + reflexão coletiva + artefatos).
+- [x] **Terraform `gpt-4o-mini`:** feito em `terraform/cognitive.tf` (`azurerm_cognitive_deployment "chat"`, versão `2024-07-18`, no mesmo `azurerm_cognitive_account.openai`). ✅
+- [x] **Roles da Managed Identity no AI Services / OpenAI:**
+  - `Cognitive Services OpenAI User` para a MI da Function → **feito** (`azurerm_role_assignment "fn_openai_user"` em `cognitive.tf`) ✅
+  - `custom_subdomain_name` habilitado no `azurerm_cognitive_account.openai` → **feito** ✅
+  - `Cognitive Services User` (Language/Vision) → assumido do Terraform da **Aula 4** (este `terraform/` é complementar, só adiciona o OpenAI). ⚠️ conferir que o lab da Aula 4 já atribui essa role à MI.
+- [x] **Pasta `function/`** com `function_app.py` (base + pipeline 2.1 + rota 3.3) + `requirements.txt` (inclui `openai>=1.0.0`). ✅
+- [x] **Pasta `terraform/`** (`main.tf` + `cognitive.tf` + `variables.tf`, standalone que consome o RG/Function da Aula 4 via `data`). ✅
+  - [x] ⚠️ **Gap corrigido:** adicionado `null_resource "fn_openai_appsettings"` em `cognitive.tf` que injeta `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_DEPLOYMENT`, `COSMOS_DB` e `COSMOS_CONTAINER_REVIEWS` na Function via `az` no `terraform apply` (idempotente, após o deployment gpt-4o-mini). Provider `null` declarado no `main.tf`. `terraform fmt` OK. ✅
 
 ---
 
 ## 📦 Deliverables compartilhados do ZIP (INSTRUCOES.md)
 
 - [ ] `entrega-grupo-aula04.md` (principal — ver bloqueadores)
-- [ ] `README.md` — como rodar o pipeline (deploy + `curl` de cada rota, incl. `/sumarizar-reviews-produto`)
-- [ ] `terraform/` — main.tf evoluído
-- [ ] `function/` — function_app.py com rotas adicionais
-- [ ] `scripts/` — re-indexação com embeddings (do 3.1)
-- [ ] `diagramas/arquitetura-qc-aula04.png` — QC atualizada com camada cognitiva (Speech/Language/Vision)
-- [ ] Anexar no doc principal: 3 reviews processadas (schema completo, do 2.1), JSON de análise de imagem (Vision), print do dashboard do Custom Vision (3.2)
-- [ ] **Reflexão coletiva** ao final do doc principal (1 pt — Critério 5)
-- [ ] Cabeçalho do grupo + distribuição do trabalho (1 pt — Critério 4)
+- [x] `README.md` — como rodar o pipeline (deploy + `curl` de cada rota, incl. `/sumarizar-reviews-produto`) ✅
+- [x] `terraform/` — `main.tf` + `cognitive.tf` + `variables.tf` ✅
+- [x] `function/` — `function_app.py` com as 5 rotas (health/transcrever/analisar-reviews/analisar-imagem/sumarizar-reviews-produto) ✅
+- [x] `scripts/` — `gerar_embeddings_vector.py` (3.1) + `scripts_dependencia_aula2/` (setup Aula 2) ✅
+- [x] `diagramas/arquitetura-qc-aula04.md` — ✅ diagrama **Mermaid** com a camada cognitiva (Speech/Language/Vision + Azure OpenAI), fluxos por rota e nota de segurança MI. (formato `.md`/Mermaid em vez de `.png`)
+- [~] Anexar no doc principal: 3 reviews processadas (✅ no `respostas-pessoa2` + resumo no consolidado), JSON de análise de imagem (⚠️ não encontrado), print do dashboard do Custom Vision (❌ depende do 3.2, não feito)
+- [x] **Reflexão coletiva** consolidada ao final do `entrega-grupo-aula04.md` (3 parágrafos respondendo às 3 perguntas do template) (1 pt — Critério 5) ✅
+- [x] Cabeçalho do grupo + distribuição do trabalho (1 pt — Critério 4) ✅
 - [ ] Gerar o ZIP `entrega-grupo-08-aula04.zip` e fazer upload no Portal FIAP (1 pessoa só)
 - [ ] Conferir que o ZIP **NÃO** inclui: `terraform.tfstate*`, `.env`, `*.pem`, `__pycache__/`, binários > 5 MB, chaves de API
 
@@ -43,42 +47,44 @@
 
 ## 👤 Pessoa 1 — Tatiana (N1 + 2.3 + 3.2)
 
-- [x] 1.1 Pronto vs Custom vs LLM (feito no `respostas-pessoa1-aula04.md`)
-- [ ] 1.2 Custo mensal (Language + Speech + Vision) — tabela + itens a/b/c
-- [ ] 1.3 Segurança MI vs API key + os 2 pré-requisitos (subdomínio + role)
-- [ ] 1.4 Vision capabilities map
-- [ ] 2.3 Vision pronto vs Custom Vision (custo, qualidade, manutenção, recomendação híbrida)
-- [ ] 3.2 Custom Vision: criar projeto, treinar, publicar, **print do dashboard**, URL da prediction API, custo 50k/mês
-- [ ] Corrigir a tabela de distribuição do `respostas-pessoa1-aula04.md` (linha da Pessoa 2 está com nome em branco `** **`)
+- [x] 1.1 Pronto vs Custom vs LLM ✅
+- [x] 1.2 Custo mensal (Language + Speech + Vision) — tabela + itens a/b/c ✅
+- [x] 1.3 Segurança MI vs API key + os 2 pré-requisitos (subdomínio + role) ✅
+- [x] 1.4 Vision capabilities map ✅
+- [x] 2.3 Vision pronto vs Custom Vision (custo, qualidade, manutenção, recomendação híbrida) ✅
+- [ ] 3.2 Custom Vision: criar projeto, treinar, publicar, **print do dashboard**, URL da prediction API, custo 50k/mês — ❌ **não feito** (o `respostas-pessoa1` termina no cabeçalho do N3 sem conteúdo do 3.2). É bônus, mas está listado na distribuição.
+- [x] Corrigir a tabela de distribuição do `respostas-pessoa1-aula04.md` (linha da Pessoa 2 agora mostra "Luciana Chaves D'Olivo") ✅
 
 ## 👤 Pessoa 2 — Luciana (2.1 + 3.1)
 
-- [ ] 2.1 Pipeline robusto de reviews: summarization extractive + PII redaction + opinion mining + persistência no Cosmos (schema do enunciado)
-- [ ] 2.1 Código atualizado no `function_app.py` + **3 exemplos de reviews processadas** no doc
-- [ ] 3.1 Terraform: `azurerm_cognitive_account "openai"` + deployment `text-embedding-3-small` (região `eastus2`/`swedencentral`)
-- [ ] 3.1 Script Python: lê 20 produtos do Blob, gera embeddings, re-indexa AI Search (`content_vector` 1536), roda 3 queries
-- [ ] 3.1 Comparação vector vs semantic search + custo dos 5M produtos + estratégia de atualização incremental
-- [ ] **Expor no Cosmos** o container `reviews` com o schema do 2.1 (`texto_redacted`, `sentimento_label`, `aspectos`) — **o 3.3 do Lucas lê daqui**
+- [x] 2.1 Pipeline robusto de reviews: PII redaction + opinion mining + entidades + summarization extractive + upsert Cosmos (schema do enunciado) ✅ (`function/function_app.py` rota `analisar-reviews`)
+- [x] 2.1 Código atualizado no `function_app.py` + **3 exemplos de reviews processadas** no `respostas-pessoa2` ✅
+- [x] 3.1 Terraform: `azurerm_cognitive_account "openai"` + deployment `text-embedding-3-small` (região `eastus2`) ✅
+- [x] 3.1 Script Python `scripts/gerar_embeddings_vector.py` (lê Blob, gera embeddings, re-indexa `content_vector` 1536, roda queries) ✅
+- [x] 3.1 Comparação vector vs semantic search + custo dos 5M produtos + estratégia incremental (Event Grid) ✅
+- [x] **Expor no Cosmos** o container `reviews` com o schema do 2.1 (`texto_redacted`, `sentimento_label`, `aspectos`) — **confirmado que bate com a query do 3.3** ✅
 
 ## 👤 Pessoa 3 — Lucas (2.2 + 3.3) — SUA PARTE
 
-- [x] 2.2 Casos de Speech (3 casos, itens a–f) — feito e completo no `respostas-pessoa3-aula04.md`
-- [x] 3.3 Código da rota `/sumarizar-reviews-produto` — escrito, sintaxe validada (`py_compile`) e lógica pura testada
-- [x] 3.3 Comparação LLM vs Language API + custo dos 5M produtos
-- [ ] **Merge da rota 3.3 no `function_app.py` compartilhado** — só possível depois do 2.1 (Pessoa 2) estar commitado
-- [ ] Confirmar com a Pessoa 2: schema do Cosmos `reviews` bate com a query do 3.3
-- [ ] Confirmar com a Pessoa 2: deployment `gpt-4o-mini` no Terraform + role `Cognitive Services OpenAI User`
-- [ ] (Opcional) Validar a rota end-to-end no Azure após deploy — `curl "/api/sumarizar-reviews-produto?produto_id=5"`
+- [x] 2.2 Casos de Speech (3 casos, itens a–f) — feito e completo no `respostas-pessoa3-aula04.md` ✅
+- [x] 3.3 Código da rota `/sumarizar-reviews-produto` — escrito, sintaxe validada (`py_compile`) ✅
+- [x] 3.3 Comparação LLM vs Language API + custo dos 5M produtos ✅
+- [x] **Merge da rota 3.3 no `function_app.py` compartilhado** — ✅ feito pela Pessoa 2 no commit `8bed13c`, bem integrado (reusa `app`, `_credential`, `_json_response`; `_openai` com guard de config; DB `qc-db` consistente)
+- [x] Confirmar schema do Cosmos `reviews` bate com a query do 3.3 — ✅ `texto_redacted`/`sentimento_label`/`aspectos` gravados pelo 2.1; `produto_id` como `str` (bate com o param da query)
+- [x] Confirmar deployment `gpt-4o-mini` no Terraform + role `Cognitive Services OpenAI User` — ✅ `terraform/cognitive.tf`
+- [x] **Validação real da rota (offline)** — teste `function/test_sumarizar_reviews_produto.py` com Cosmos+OpenAI mockados: **6 cenários passando** (produto_id ausente→400, OpenAI off→503, sem reviews→404, caminho feliz→200, JSON inválido→502, formatação do prompt). `exit 0` ✅
+- [x] Validar a rota end-to-end no **Azure** após deploy — ✅ `curl "/api/sumarizar-reviews-produto?produto_id=5"` testado pelo grupo na Azure
 
 ---
 
 ## ✅ Validação final (antes de gerar o ZIP)
 
-- [ ] `terraform validate` / `terraform plan` sem erros
-- [ ] Deploy no Azure e teste de **cada rota** por `curl` (produtos, frete, sentimento/2.1, sumarização/3.3)
-- [ ] Reviews aparecem enriquecidas no Cosmos (2.1) e o 3.3 consegue lê-las
-- [ ] Embeddings re-indexados no AI Search (3.1) e queries retornando (3.1)
-- [ ] Custom Vision publicado e testado via REST (3.2)
-- [ ] Diagrama atualizado com a camada cognitiva
-- [ ] Reflexão coletiva escrita
+- [x] `terraform validate` / `terraform plan` sem erros — ✅ rodado pelo grupo no Azure (deploy concluído); `terraform fmt` OK localmente
+- [x] Deploy no Azure e teste de **cada rota** por `curl` (2.1 e 3.3) — ✅ feito pelo grupo na Azure
+- [x] Rota 3.3 validada offline (unit test com mocks — ver seção Pessoa 3) ✅
+- [x] Reviews aparecem enriquecidas no Cosmos (2.1) e o 3.3 consegue lê-las (end-to-end no Azure) — ✅ validado pelo grupo
+- [x] Embeddings re-indexados no AI Search (3.1) e queries retornando (3.1) — ✅ validado pelo grupo
+- [ ] Custom Vision publicado e testado via REST (3.2) — ❌ não feito (bônus)
+- [x] Diagrama atualizado com a camada cognitiva — ✅ `diagramas/arquitetura-qc-aula04.md`
+- [x] Reflexão coletiva **consolidada** escrita — ✅ no `entrega-grupo-aula04.md`
 - [ ] ZIP gerado, conferido (`unzip -l`) e enviado no Portal FIAP
